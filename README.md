@@ -15,8 +15,8 @@ also through VMs like :
 
 
 A great alternative is the window's WSL.
-Get [Ubuntu 20.04](https://www.microsoft.com/store/productId/9N6SVWS3RX71) (latest stable version as of 19/10/2020)
 
+Get [Ubuntu 20.04](https://www.microsoft.com/store/productId/9N6SVWS3RX71) (latest stable version as of 19/10/2020)
 
 
 
@@ -26,7 +26,9 @@ cd to you working directory.
 Then
 
 - `git clone git@github.com:Taumah/love_xml.git`  for SSH
+    
     **OR**
+
 - `git clone https://github.com/Taumah/love_xml.git` for HTTPS
 
 
