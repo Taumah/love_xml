@@ -47,13 +47,11 @@ packages needed : :lock:
 
 Everything you need to launch the project is available in the Makefile
 
->THIS PART IS NOT FINISHED YET
+1. `make all`       both builds and runs the program.
+2. `make build`     creates an exe in bin/ folder
+3. `make launch`    is a shortcut for ./bin/name_of_exe.exe
 
-1. `make build`
-2. `make launch`
-3. `make all`
-
-///More incoming 
+>I assume we will mostly use `make all`
 
 ### Contributors
 - @Taumah :green_heart:
