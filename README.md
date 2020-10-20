@@ -71,5 +71,5 @@ For further learning , see [this blog](http://blog.borovsak.si/) (English)
 
 ### Contributors
 - @Taumah :green_heart:
-- 
+- @Quentin-Pierson
 - 
