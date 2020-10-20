@@ -1,7 +1,8 @@
-cc=gcc-8
+cc=gcc
 
-CFLAGS= -Wall -Wextra
+CFLAGS= -Wall -Wextra `pkg-config --cflags gtk+-3.0`
 
+CLIBS= `pkg-config --libs gtk+-3.0`
 
 SRC= ./core/src/*c ./core/include/*.h
 
@@ -10,7 +11,7 @@ output= ./bin/release.exe
 
 
 compile: $(SRC)
-	@$(cc) $(CFLAGS) $(SRC) -o $(output) \
+	@$(cc) $(CFLAGS) $(SRC) -o $(output) $(CLIBS)\
 	&& echo "Compilation ended successfully"
 
 
