@@ -5,13 +5,16 @@
 
 - Open a Windows Powershell as admin and type :
     ```PowerShell
-    * Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
+    Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-Linux
     ```
 - download and install any version of Linux on the microsoft store:
     * latest ubuntu [20.04 TLS](https://www.microsoft.com/store/productId/9N6SVWS3RX71)
     * type WSL in the microsoft's store searchbar
 
-- create a new user ;  username : your_name  password : root    are the most usual credentials used
+- create a new user.
+
+ `username : your_name`  `password : root`  ==> are the most usual credentials used
+
 
 - update packages with `sudo apt update && sudo apt upgrade`
 > You can close you WSL for now
@@ -25,7 +28,7 @@
     * let all other configuration as default
 
 - get back to your wsl 
-    * type `sudo apt-get install vim-gtk` (make sure you updated your system well)
+    * type `sudo apt install vim-gtk` (make sure you updated your system well)
 > it might take up some time :grimacing:
 
 - go to your .bashrc (nano /home/YOUR_USERNAME/.bashrc) and write at the very bottom 
@@ -35,7 +38,7 @@
 
 - On your WSL ; install a desktop environement : 
 
-    * `sudo apt-get install xfce4` is the software we'll use
+    * `sudo apt install xfce4` is the software we'll use
 
 > might take up **more** time :grimacing::grimacing::grimacing:
 
