@@ -4,7 +4,8 @@ CFLAGS= -Wall -Wextra `pkg-config --cflags gtk+-3.0`
 
 CLIBS= `pkg-config --libs gtk+-3.0`
 
-SRC= ./core/src/*c ./core/include/*.h
+SRC= ./core/src/Partie1.c 
+# ./core/include/*.h
 
 output= ./bin/release.exe
 
