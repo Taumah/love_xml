@@ -1,39 +1,45 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+//Authors     Quentin Pierson  / Thomas Tresgots
+//
+//Date : 21/10/2020
+//
 
-char** readDTD(char* filename);
-void freeDTD(char** lines , int nbr_of_lines);
-
-const char *getFilenameExt(const char *filename);
-int verifExtention(char* fileXML);
-
-
+#include "core/include/Partie1.h"
 
 int main(int argc, char* argv[]){
     (void)argc ; (void)argv;
 
 
 
-    char* fileName = "test/dtds/test1.dtd";
+    char* fileDTD = "test/dtds/test1.dtd";
+    char* fileXML = "test/XML/test.xml";
 
     
 
-    char** lines = readDTD(fileName);
+    char** linesDTD = readDTD(fileDTD);
+    char** linesXML = readXML(fileXML);
 
     for (int i = 0; i < 40; i+=1)
     {
-        printf("%s",  lines[i]);
+        printf("%s",  linesDTD[i]);
     }
+    printf("\n");
+    printf("\n");
+    
+    for (int i = 0; i < 40; i+=1)
+    {
+        printf("%s",  linesXML[i]);
+    }
+
+    printf("\n");
+
     
 
-    freeDTD(lines, 40);
+    freeDTD(linesDTD, 40);
+    freeXML(linesXML , 40);
 
     return 0;
 
 }
-
-
 
 char** readDTD(char* fileName){
 
@@ -77,6 +83,9 @@ char** readDTD(char* fileName){
 
 
     printf("\n");
+
+    fclose(dtd);
+
     return lines;
     
 }
@@ -93,6 +102,16 @@ void freeDTD(char** lines , int nbr_of_lines){
 
 }
 
+void freeXML(char** lines , int nbr_of_lines){
+
+    for (int i = 0; i < nbr_of_lines; i+=1)
+    {
+        free(lines[i]);
+    }
+    
+    free(lines);
+
+}
 
 const char *getFilenameExt(const char *filename) {
     const char *dot = strrchr(filename, '.');
@@ -100,8 +119,7 @@ const char *getFilenameExt(const char *filename) {
     return dot + 1;
 }
 
-
-int verifExtention(char* fileXML){
+int verifExtension(char* fileXML){
 
     if(   strcmp("xml" , getFilenameExt(fileXML) )  != 0  ){
         printf("ceci n'est pas un fichier XML\n");
@@ -112,3 +130,42 @@ int verifExtention(char* fileXML){
         return 0;
     }
 }
+
+
+char** readXML(char* fileName){
+
+    if(verifExtension(fileName) == 1){
+        return NULL;
+    }
+
+    FILE* XML = fopen(fileName , "rw");
+
+    if( XML == NULL){
+        printf("erreur à l'ouverture");
+        return NULL;
+    }
+    
+    int nbr_of_lines = 40; // attention , à adapter au fichier lu 
+    int line_number = 0;
+    char** lines = malloc(sizeof(char*) * nbr_of_lines);
+
+    for (int i = 0; i < nbr_of_lines; i+=1)
+    {
+        lines[i] = malloc(sizeof(char) * 200);
+    }
+      
+
+    while (  fgets( lines[line_number]  , 200 , XML) != NULL ){
+        line_number+= 1;    
+    }
+
+    printf("%s",  lines[2]);
+
+    printf("\n");
+
+    fclose(XML);
+    return lines;
+    
+
+}
+
