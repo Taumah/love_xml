@@ -3,70 +3,76 @@
 //Date : 21/10/2020
 //
 
-#include "core/include/Partie1.h"
+#include "../include/Partie1.h"
+
+fileAsArray dtd , xml ;
 
 int main(int argc, char* argv[]){
     (void)argc ; (void)argv;
 
-
+    initGlobals();
 
     char* fileDTD = "test/dtds/test1.dtd";
     char* fileXML = "test/XML/test.xml";
 
     
 
-    char** linesDTD = readDTD(fileDTD);
-    char** linesXML = readXML(fileXML);
+    readDTD(fileDTD);
+    readXML(fileXML);
 
-    for (int i = 0; i < 40; i+=1)
-    {
-        printf("%s",  linesDTD[i]);
+
+    printf("%s\n" , dtd.array[2]);
+    printf("\n");
+
+    char* pos = dtd.array[2];
+
+    // dtd.array[strlen(dtd.array[2])] = 
+
+    while(  (pos = strpbrk(dtd.array[2] , " >") ) != NULL  ){
+        
+        *pos = '\0';
+
+        printf( "%s \n" , dtd.array[2]);
+
+        strcpy(dtd.array[2] ,  pos+1);
+
+
     }
-    printf("\n");
-    printf("\n");
+
+    // for (int i = 0; i < xml.length; i+=1)
+    // {
+    //     printf("%s",  xml.array[i]);
+    // }
+    // printf("\n");
+    // printf("\n");
     
-    for (int i = 0; i < 40; i+=1)
-    {
-        printf("%s",  linesXML[i]);
-    }
+    // for (int i = 0; i < dtd.length; i+=1)
+    // {
+    //     printf("%s",  dtd.array[i]);
+    // }
 
     printf("\n");
 
     
 
-    freeDTD(linesDTD, 40);
-    freeXML(linesXML , 40);
-
+    freefileAsArray(dtd);
+    freefileAsArray(xml);
     return 0;
 
 }
 
-char** readDTD(char* fileName){
+void readDTD(char* fileName){
 
-    FILE* dtd = fopen(fileName , "rw");
+    FILE* dtd_f = fopen(fileName , "rw");
 
-    if( dtd == NULL){
+    if( dtd_f == NULL){
         printf("erreur à l'ouverture");
-        return NULL;
+        return;
     }
     
+    int line_number = 0;    
 
-    int nbr_of_lines = 40;
-    int line_number = 0;
-    char** lines = malloc(sizeof(char*) * nbr_of_lines);
-
-    
-
-
-    for (int i = 0; i < nbr_of_lines; i+=1)
-    {
-        lines[i] = malloc(sizeof(char) * 200);
-    }
-    
-
-    
-
-    while (  fgets( lines[line_number]  , 200 , dtd) != NULL ){
+    while (  fgets( dtd.array[line_number]  , 200 , dtd_f) != NULL ){
         line_number+= 1;    
     }
 
@@ -78,40 +84,9 @@ char** readDTD(char* fileName){
     //*
     //***************************************************
 
-    printf("%s",  lines[2]);
-
-
-
-    printf("\n");
-
-    fclose(dtd);
-
-    return lines;
-    
+    fclose(dtd_f);
 }
 
-
-void freeDTD(char** lines , int nbr_of_lines){
-
-    for (int i = 0; i < nbr_of_lines; i+=1)
-    {
-        free(lines[i]);
-    }
-    
-    free(lines);
-
-}
-
-void freeXML(char** lines , int nbr_of_lines){
-
-    for (int i = 0; i < nbr_of_lines; i+=1)
-    {
-        free(lines[i]);
-    }
-    
-    free(lines);
-
-}
 
 const char *getFilenameExt(const char *filename) {
     const char *dot = strrchr(filename, '.');
@@ -126,46 +101,69 @@ int verifExtension(char* fileXML){
         return 1;
     }else
     {
-        printf("extention valide \n");
+        printf("extension valide \n");
         return 0;
     }
 }
 
 
-char** readXML(char* fileName){
+void readXML(char* fileName){
 
     if(verifExtension(fileName) == 1){
-        return NULL;
+        return;
     }
 
     FILE* XML = fopen(fileName , "rw");
 
     if( XML == NULL){
         printf("erreur à l'ouverture");
-        return NULL;
+        exit(1);
     }
     
-    int nbr_of_lines = 40; // attention , à adapter au fichier lu 
     int line_number = 0;
-    char** lines = malloc(sizeof(char*) * nbr_of_lines);
-
-    for (int i = 0; i < nbr_of_lines; i+=1)
-    {
-        lines[i] = malloc(sizeof(char) * 200);
-    }
       
 
-    while (  fgets( lines[line_number]  , 200 , XML) != NULL ){
+    while (  fgets( xml.array[line_number]  , 200 , XML) != NULL ){
         line_number+= 1;    
     }
 
-    printf("%s",  lines[2]);
+    xml.length = line_number;
 
-    printf("\n");
-
-    fclose(XML);
-    return lines;
-    
+    fclose(XML);    
 
 }
 
+void initGlobals(){
+    dtd.length = 40;
+    xml.length = 40;
+
+    dtd.array = malloc(sizeof(char*) * dtd.length );
+    xml.array = malloc(sizeof(char*) * xml.length );
+
+    if(dtd.array == NULL || xml.array == NULL){
+        printf("manque d'espace");
+        exit(1);
+    }
+
+    for(int i = 0 ; i < 40 ; i+=1){
+        dtd.array[i] = malloc(sizeof(char*) * 200);
+        xml.array[i] = malloc(sizeof(char*) * 200);
+        
+        if(dtd.array[i] == NULL || xml.array[i] == NULL){
+            printf("manque d'espace");
+            exit(1);
+        }
+
+    }
+  
+}
+
+
+void freefileAsArray(fileAsArray fas){
+
+    for (int i = 0; i < fas.length ; i+=1)
+    {
+        free(fas.array[i]);
+    }  
+    free(fas.array);
+}
