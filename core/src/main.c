@@ -1,45 +1,86 @@
+//Authors     Quentin Pierson  / Thomas Tresgots
+//
+//Date : 21/10/2020
+//
+
 #include "../include/main.h"
+#include "../include/dtd.h"
+#include "../include/xml.h"
+
+// on récupère les variables globales des autres fichiers
+fileAsArray dtd , xml ;
+
+int main(int argc, char* argv[]){
+    (void)argc ; (void)argv;
+
+    initGlobals();
+
+    char* fileDTD = "test/dtds/test1.dtd";
+    // char* fileXML = "test/XML/test.xml";
 
 
-static void print_hello (GtkWidget *widget, gpointer data)
-{
-  g_print ("Hello World\n");
+    readDTD(fileDTD);
+    
+    // readXML(fileXML);
 
-  (void)widget;(void)data;
+
+    // printf("%s\n" , dtd.array[2]);
+    // printf("\n");
+
+   splitDtdLine(dtd.array[2]);
+
+    printf("\n");
+
+    
+
+    freeFileAsArray(dtd);
+    // freeFileAsArray(xml);
+    return 0;
+
 }
 
-int main (int argc, char *argv[])
-{
-  GtkBuilder *builder;
-  GObject *window;
-  GObject *button;
-  GError *error = NULL;
 
-  gtk_init (&argc, &argv);
+void initGlobals(){
+    dtd.length = 40;
+    xml.length = 40;
 
-  /* Construct a GtkBuilder instance and load our UI description */
-  builder = gtk_builder_new ();
-  if (gtk_builder_add_from_file (builder, "core/glade/builder.glade", &error) == 0)
-    {
-      g_printerr ("Error loading file: %s\n", error->message);
-      g_clear_error (&error);
-      return 1;
+    dtd.array = malloc(sizeof(char*) * dtd.length );
+    xml.array = malloc(sizeof(char*) * xml.length );
+
+    if(dtd.array == NULL || xml.array == NULL){
+        printf("manque d'espace");
+        exit(1);
     }
 
-  /* Connect signal handlers to the constructed widgets. */
-  window = gtk_builder_get_object (builder, "window");
-  g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+    for(int i = 0 ; i < 40 ; i+=1){
+        dtd.array[i] = malloc(sizeof(char*) * 200);
+        xml.array[i] = malloc(sizeof(char*) * 200);
+        
+        if(dtd.array[i] == NULL || xml.array[i] == NULL){
+            printf("manque d'espace");
+            exit(1);
+        }
 
-  button = gtk_builder_get_object (builder, "button1");
-  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
+    }
+  
+}
 
-  button = gtk_builder_get_object (builder, "button2");
-  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
 
-  button = gtk_builder_get_object (builder, "quit");
-  g_signal_connect (button, "clicked", G_CALLBACK (gtk_main_quit), NULL);
+void freeFileAsArray(fileAsArray fas){
 
-  gtk_main ();
+    for (int i = 0; i < fas.length ; i+=1)
+    {
+        free(fas.array[i]);
+    }  
+    free(fas.array);
+}
 
-  return 0;
+void printFileAsArray(fileAsArray fas){
+    for (int i = 0; i < fas.length; i+=1)
+    {
+        printf("%s",  fas.array[i]);
+    }
+    printf("\n");
+    printf("\n");
+    
 }
