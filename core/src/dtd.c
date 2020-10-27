@@ -14,7 +14,7 @@ void readDTD(char* fileName){
     
     int line_number = 0;    
 
-    while (  fgets( dtd.array[line_number]  , 200 , dtd_f) != NULL ){
+    while (  fgets( dtd.array[line_number]  , FILE_AS_ARRAY_LINE_LENGTH , dtd_f) != NULL ){
         line_number+= 1;    
     }
 
@@ -38,6 +38,10 @@ void splitDtdLine(char* line){
     if(left == NULL){
         exit(1);
     }
+
+    right = strchr(left , ' ');
+    // *right = '\0';
+    printf("%d eheh , %d ahah , %d hihi ", strncmp(left , "ELEMENT" , right - left), strcmp(left , "ATTLIST") , strcmp(left , "ENTITY") ) ;
 
     while(  (right = strpbrk(left , " >") ) != NULL  ){
         

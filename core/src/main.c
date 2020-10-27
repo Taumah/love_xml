@@ -41,8 +41,8 @@ int main(int argc, char* argv[]){
 
 
 void initGlobals(){
-    dtd.length = 40;
-    xml.length = 40;
+    dtd.length = FILE_AS_ARRAY_DEFAULT_LENGTH;
+    xml.length = FILE_AS_ARRAY_DEFAULT_LENGTH;
 
     dtd.array = malloc(sizeof(char*) * dtd.length );
     xml.array = malloc(sizeof(char*) * xml.length );
@@ -52,9 +52,9 @@ void initGlobals(){
         exit(1);
     }
 
-    for(int i = 0 ; i < 40 ; i+=1){
-        dtd.array[i] = malloc(sizeof(char*) * 200);
-        xml.array[i] = malloc(sizeof(char*) * 200);
+    for(int i = 0 ; i < FILE_AS_ARRAY_DEFAULT_LENGTH ; i+=1){
+        dtd.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
+        xml.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
         
         if(dtd.array[i] == NULL || xml.array[i] == NULL){
             printf("manque d'espace");

@@ -2,7 +2,7 @@ cc=gcc-8
 
 CFLAGS= -Wall -Wextra  `pkg-config --cflags gtk+-3.0`
 
-EXTRA_CFLAGS= -Werror -Wshadow -Wformat-overflow -Wformat-truncation -g3
+EXTRA_CFLAGS= -Werror -Wshadow -Wformat-overflow -Wformat-truncation -g3 
 
 CLIBS= `pkg-config --libs gtk+-3.0`
 
