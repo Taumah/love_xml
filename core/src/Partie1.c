@@ -6,6 +6,7 @@
 #include "../include/Partie1.h"
 
 fileAsArray dtd , xml ;
+element *found_elements;
 
 int main(int argc, char* argv[]){
     (void)argc ; (void)argv;
@@ -24,11 +25,11 @@ int main(int argc, char* argv[]){
     printf("%s\n" , dtd.array[2]);
     printf("\n");
 
-    char* pos = dtd.array[2];
+    char* pos = strpbrk(dtd.array[2] , "!") ;
 
     // dtd.array[strlen(dtd.array[2])] = 
 
-    while(  (pos = strpbrk(dtd.array[2] , " >") ) != NULL  ){
+    while(  pos != NULL  ){
         
         *pos = '\0';
 
@@ -36,6 +37,7 @@ int main(int argc, char* argv[]){
 
         strcpy(dtd.array[2] ,  pos+1);
 
+        pos = strpbrk(dtd.array[2] , " >");
 
     }
 
@@ -167,3 +169,11 @@ void freefileAsArray(fileAsArray fas){
     }  
     free(fas.array);
 }
+
+
+
+
+
+
+
+
