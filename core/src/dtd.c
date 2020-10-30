@@ -41,7 +41,7 @@ void splitDtdLine(char* line){
 
     right = strchr(left , ' ');
     // *right = '\0';
-    printf("%d eheh , %d ahah , %d hihi ", strncmp(left , "ELEMENT" , right - left), strcmp(left , "ATTLIST") , strcmp(left , "ENTITY") ) ;
+    printf("%d eheh , %d ahah , %d hihi \n", strncmp(left , "ELEMENT" , right - left), strncmp(left , "ATTLIST" , right - left) , strcmp(left , "ENTITY") ) ;
 
     while(  (right = strpbrk(left , " >") ) != NULL  ){
         
@@ -53,3 +53,5 @@ void splitDtdLine(char* line){
     
     }
 }
+
+

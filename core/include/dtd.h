@@ -4,6 +4,8 @@
 
 
 typedef struct element{
+    //pour plus d'infos... => https://www.w3schools.com/xml/xml_dtd_elements.asp
+
     char* name;  // nom de l'element
     char* category; // peut être vide ; 
     
@@ -13,7 +15,10 @@ typedef struct element{
 
 }element;
 
+
+
 typedef struct attribute{
+    //pour plus d'infos... => https://www.w3schools.com/xml/xml_dtd_attributes.asp
 
     char* elementName;
     char* name;

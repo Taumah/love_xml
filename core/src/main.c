@@ -16,25 +16,24 @@ int main(int argc, char* argv[]){
     initGlobals();
 
     char* fileDTD = "test/dtds/test1.dtd";
-    // char* fileXML = "test/XML/test.xml";
-
+    char* fileXML = "test/XML/test.xml";
 
     readDTD(fileDTD);
     
-    // readXML(fileXML);
+    readXML(fileXML);
 
 
     // printf("%s\n" , dtd.array[2]);
     // printf("\n");
 
-   splitDtdLine(dtd.array[2]);
+   splitDtdLine(dtd.array[3]);
 
     printf("\n");
 
     
 
     freeFileAsArray(dtd);
-    // freeFileAsArray(xml);
+    freeFileAsArray(xml);
     return 0;
 
 }
