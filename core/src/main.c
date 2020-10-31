@@ -6,6 +6,7 @@
 #include "../include/main.h"
 #include "../include/dtd.h"
 #include "../include/xml.h"
+#include "../include/menu.h"
 
 // on récupère les variables globales des autres fichiers
 fileAsArray dtd , xml ;
@@ -31,7 +32,8 @@ int main(int argc, char* argv[]){
     printf("\n");
 
     
-
+    menu();
+    
     freeFileAsArray(dtd);
     freeFileAsArray(xml);
     return 0;
