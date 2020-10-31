@@ -8,6 +8,11 @@
 #include "../include/xml.h"
 #include "../include/menu.h"
 
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
 // on récupère les variables globales des autres fichiers
 fileAsArray f_dtd , f_xml ;
 
@@ -24,9 +29,9 @@ int main(int argc, char* argv[]){
 
     readDTD(fileDTD);
     
-    readXML(fileXML);
+    // readXML(fileXML);
 
-    splitDtd();
+    // splitDtd();
 //    splitDtdLine(f_dtd.array[10]);
 
     freeFileAsArray(f_dtd);
@@ -46,14 +51,14 @@ void initGlobals(){
     checkMalloc(f_dtd.array);
     checkMalloc(f_xml.array);
 
-    for(int i = 0 ; i < FILE_AS_ARRAY_DEFAULT_LENGTH ; i+=1){
-        f_dtd.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
-        f_xml.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
+    // for(int i = 0 ; i < FILE_AS_ARRAY_DEFAULT_LENGTH ; i+=1){
+    //     f_dtd.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
+    //     f_xml.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
         
-        checkMalloc(f_dtd.array[i]);
-        checkMalloc(f_xml.array[i]);
+    //     checkMalloc(f_dtd.array[i]);
+    //     checkMalloc(f_xml.array[i]);
 
-    }
+    // }
   
 }
 

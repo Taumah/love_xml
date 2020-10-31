@@ -5,6 +5,9 @@
 #define FILE_AS_ARRAY_DEFAULT_LENGTH    40
 #define FILE_AS_ARRAY_LINE_LENGTH       200
 
+#define false 0
+#define true 1
+
 /*  représente un fichier avec chaque ligne du
     fichier comme une chaîne de caractères , 
     tous manipulables de la même manière */

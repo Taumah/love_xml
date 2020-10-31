@@ -1,38 +1,45 @@
 #include "../include/dtd.h"
 #include "../include/main.h"
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+
 extern fileAsArray f_dtd;
+
+off_t getFileSize(char* fileName){
+    struct stat stats ; 
+    
+    if( stat(fileName, &stats) == false ){
+        printf("Erreur lecture info fichiers");
+        exit(EXIT_FAILURE);
+    } 
+    
+    printf("File size:                %lld bytes\n",
+            (long long) stats.st_size);
+
+    return stats.st_size;
+}
 
 void readDTD(char* fileName){
 
-    FILE* dtd_f = fopen(fileName , "rw");
+    unsigned long long fileSize = getFileSize(fileName);
 
-    if( dtd_f == NULL){
-        printf("erreur à l'ouverture");
-        return;
-    }
-    
-    int line_number = 0;    
-    // TODO find DEBUT AND END OF LINE
-    // then copy it to f_dtd.array[line_number]
+    char* buffer = malloc(sizeof(char) * fileSize);
+    checkMalloc(buffer);
+
+    FILE* f = fopen(fileName , "r");
+
+    fread(buffer , fileSize , sizeof(char) , f);
+
+    // printf("%s" , buffer);
+
+    free(buffer);
+
+    fclose(f);
 
 
-    while (  fgets( f_dtd.array[line_number]  , FILE_AS_ARRAY_LINE_LENGTH , dtd_f) != NULL ){
-        line_number+= 1; 
 
-        if(line_number == f_dtd.length){
-            doubleDtdSize();
-        }
-    }
-
-    //**************************************************
-    //*
-    //*        gérer le saut de line de fin
-    //*
-    //*
-    //***************************************************
-
-    fclose(dtd_f);
 }
 
 void doubleDtdSize(){
