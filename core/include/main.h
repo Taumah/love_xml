@@ -19,5 +19,15 @@ void freeFileAsArray(fileAsArray fas);
 
 
 
-/* prérempli les variables globales du programme */
+/*  prérempli les variables globales du programme */
 void initGlobals(void);
+
+
+/*  s'assure du succes de l'allocation dynamique, 
+    stop le programme sinon*/
+void checkMalloc(void* pointer);
+
+
+/*  s'assure du succes de l'ouverture du fichier, 
+    stop le programme sinon*/
+void checkfOpen(void* pointer);

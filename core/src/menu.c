@@ -4,12 +4,13 @@
 void menu(){
   int choice;
   do{
-    printf("--------Menu-------- \n");
-    printf("1: blblbl \n");
-    printf("2: blblbl \n");
-    printf("3. Exit \n");
-
-    printf("Entre ton choix! ");
+    printf(	"--------Menu-------- \n"	\
+    		"1: blblbl \n"				\
+    		"2: blblbl \n"				\
+			"3. Exit \n"				\
+			"Entre ton choix! "
+			);
+			
     scanf(" %d",&choice);
 
     switch(choice){

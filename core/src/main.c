@@ -9,12 +9,15 @@
 #include "../include/menu.h"
 
 // on récupère les variables globales des autres fichiers
-fileAsArray dtd , xml ;
+fileAsArray f_dtd , f_xml ;
+
+doctypeDef dtd; 
 
 int main(int argc, char* argv[]){
     (void)argc ; (void)argv;
 
     initGlobals();
+
 
     char* fileDTD = "test/dtds/test1.dtd";
     char* fileXML = "test/XML/test.xml";
@@ -23,44 +26,32 @@ int main(int argc, char* argv[]){
     
     readXML(fileXML);
 
+    splitDtd();
+//    splitDtdLine(f_dtd.array[10]);
 
-    // printf("%s\n" , dtd.array[2]);
-    // printf("\n");
-
-   splitDtd();
-
-    printf("\n");
-
-    
-    // menu();
-    
-    freeFileAsArray(dtd);
-    freeFileAsArray(xml);
+    freeFileAsArray(f_dtd);
+    freeFileAsArray(f_xml);
     return 0;
 
 }
 
 
 void initGlobals(){
-    dtd.length = FILE_AS_ARRAY_DEFAULT_LENGTH;
-    xml.length = FILE_AS_ARRAY_DEFAULT_LENGTH;
+    f_dtd.length = FILE_AS_ARRAY_DEFAULT_LENGTH;
+    f_xml.length = FILE_AS_ARRAY_DEFAULT_LENGTH;
 
-    dtd.array = malloc(sizeof(char*) * dtd.length );
-    xml.array = malloc(sizeof(char*) * xml.length );
+    f_dtd.array = malloc(sizeof(char*) * f_dtd.length );
+    f_xml.array = malloc(sizeof(char*) * f_xml.length );
 
-    if(dtd.array == NULL || xml.array == NULL){
-        printf("manque d'espace");
-        exit(1);
-    }
+    checkMalloc(f_dtd.array);
+    checkMalloc(f_xml.array);
 
     for(int i = 0 ; i < FILE_AS_ARRAY_DEFAULT_LENGTH ; i+=1){
-        dtd.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
-        xml.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
+        f_dtd.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
+        f_xml.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
         
-        if(dtd.array[i] == NULL || xml.array[i] == NULL){
-            printf("manque d'espace");
-            exit(1);
-        }
+        checkMalloc(f_dtd.array[i]);
+        checkMalloc(f_xml.array[i]);
 
     }
   
@@ -82,6 +73,21 @@ void printFileAsArray(fileAsArray fas){
         printf("%s",  fas.array[i]);
     }
     printf("\n");
-    printf("\n");
+    
+}
+
+void checkMalloc(void* pointer){
+    if(pointer == NULL){
+        printf("manque d'espace");
+        exit(1);
+    }
+
+}
+
+void checkfOpen(void* pointer){
+    if(pointer == NULL){
+        printf("fichier Non ouvert");
+        exit(1);
+    }
     
 }
