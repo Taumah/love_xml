@@ -1,45 +1,106 @@
+//Authors     Quentin Pierson  / Thomas Tresgots
+//
+//Date : 21/10/2020
+//
+
 #include "../include/main.h"
+#include "../include/dtd.h"
+#include "../include/xml.h"
+
+// on récupère les variables globales des autres fichiers
+fileAsArray f_dtd , f_xml ;
+
+doctypeDef dtd; 
+
+int main(int argc, char* argv[]){
+    (void)argc ; (void)argv;
+
+    initGlobals();
+
+    char* fileDTD = "test/dtds/test1.dtd";
+    // char* fileXML = "test/XML/test.xml";
 
 
-static void print_hello (GtkWidget *widget, gpointer data)
-{
-  g_print ("Hello World\n");
+    readDTD(fileDTD);
+    
+    // readXML(fileXML);
 
-  (void)widget;(void)data;
+
+    // printf("%s\n" , dtd.array[2]);
+    // printf("\n");
+
+   splitDtdLine(f_dtd.array[10]);
+
+    printf("\n");
+
+    
+
+    freeFileAsArray(f_dtd);
+    freeFileAsArray(f_xml);
+    return 0;
+
 }
 
-int main (int argc, char *argv[])
-{
-  GtkBuilder *builder;
-  GObject *window;
-  GObject *button;
-  GError *error = NULL;
 
-  gtk_init (&argc, &argv);
+void initGlobals(){
+    f_dtd.length = FILE_AS_ARRAY_DEFAULT_LENGTH;
+    f_xml.length = FILE_AS_ARRAY_DEFAULT_LENGTH;
 
-  /* Construct a GtkBuilder instance and load our UI description */
-  builder = gtk_builder_new ();
-  if (gtk_builder_add_from_file (builder, "core/glade/builder.glade", &error) == 0)
-    {
-      g_printerr ("Error loading file: %s\n", error->message);
-      g_clear_error (&error);
-      return 1;
+    f_dtd.array = malloc(sizeof(char*) * f_dtd.length );
+    f_xml.array = malloc(sizeof(char*) * f_xml.length );
+
+    if(f_dtd.array == NULL || f_xml.array == NULL){
+        printf("manque d'espace");
+        exit(1);
     }
 
-  /* Connect signal handlers to the constructed widgets. */
-  window = gtk_builder_get_object (builder, "window");
-  g_signal_connect (window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+    for(int i = 0 ; i < FILE_AS_ARRAY_DEFAULT_LENGTH ; i+=1){
+        f_dtd.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
+        f_xml.array[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
+        
+        if(f_dtd.array[i] == NULL || f_xml.array[i] == NULL){
+            printf("manque d'espace");
+            exit(1);
+        }
 
-  button = gtk_builder_get_object (builder, "button1");
-  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
+    }
+  
+}
 
-  button = gtk_builder_get_object (builder, "button2");
-  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
 
-  button = gtk_builder_get_object (builder, "quit");
-  g_signal_connect (button, "clicked", G_CALLBACK (gtk_main_quit), NULL);
+void freeFileAsArray(fileAsArray fas){
 
-  gtk_main ();
+    for (int i = 0; i < fas.length ; i+=1)
+    {
+        free(fas.array[i]);
+    }  
+    free(fas.array);
+}
 
-  return 0;
+void printFileAsArray(fileAsArray fas){
+    for (int i = 0; i < fas.length; i+=1)
+    {
+        printf("%s",  fas.array[i]);
+    }
+    printf("\n");
+    printf("\n");
+    
+}
+
+void checkMalloc(void* pointer){
+    if(pointer == NULL){
+        printf("manque d'espace");
+        exit(1);
+    }
+
+}
+
+
+
+void checkfOpen(void* pointer){
+    if(pointer == NULL){
+        printf("fichier Non ouvert");
+        exit(1);
+    }
+    
 }
