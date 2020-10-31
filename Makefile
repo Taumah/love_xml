@@ -10,7 +10,6 @@ SRC= ./core/src/*.c ./core/include/*.h
 
 output= ./bin/release.exe
 
-
 compile: $(SRC)
 	@$(cc) $(CFLAGS) $(EXTRA_CFLAGS) $(SRC) -o $(output) $(CLIBS)\
 	&& echo "Compilation ended successfully"
@@ -22,9 +21,9 @@ build:
 
 launch:
 	@echo "\n\n"
-	@./bin/release.exe
+	@$(output)
 
 all: build launch
 
-debug: all
-	
+debug: build
+	gdb $(output)

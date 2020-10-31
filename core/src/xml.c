@@ -1,7 +1,7 @@
 #include "../include/xml.h"
 #include "../include/main.h"
 
-extern fileAsArray xml;
+extern fileAsArray f_xml;
 
 void readXML(char* fileName){
 
@@ -19,11 +19,11 @@ void readXML(char* fileName){
     int line_number = 0;
       
 
-    while (  fgets( xml.array[line_number]  , 200 , XML) != NULL ){
+    while (  fgets( f_xml.array[line_number]  , 200 , XML) != NULL ){
         line_number+= 1;    
     }
 
-    xml.length = line_number;
+    f_xml.length = line_number;
 
     fclose(XML);    
 
