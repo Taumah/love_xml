@@ -4,6 +4,8 @@
 
 
 typedef struct s_element{
+    //pour plus d'infos... => https://www.w3schools.com/xml/xml_dtd_elements.asp
+
     char* name;  // nom de l'element
 
 
@@ -18,6 +20,7 @@ typedef struct s_element{
 }element;
 
 typedef struct s_attribute{
+    //pour plus d'infos... => https://www.w3schools.com/xml/xml_dtd_attributes.asp
 
     char* elementName;
     char* name;

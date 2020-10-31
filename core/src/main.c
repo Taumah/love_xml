@@ -6,6 +6,7 @@
 #include "../include/main.h"
 #include "../include/dtd.h"
 #include "../include/xml.h"
+#include "../include/menu.h"
 
 // on récupère les variables globales des autres fichiers
 fileAsArray f_dtd , f_xml ;
@@ -18,12 +19,11 @@ int main(int argc, char* argv[]){
     initGlobals();
 
     char* fileDTD = "test/dtds/test1.dtd";
-    // char* fileXML = "test/XML/test.xml";
-
+    char* fileXML = "test/XML/test.xml";
 
     readDTD(fileDTD);
     
-    // readXML(fileXML);
+    readXML(fileXML);
 
 
     // printf("%s\n" , dtd.array[2]);
