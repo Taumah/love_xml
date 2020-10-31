@@ -30,6 +30,13 @@ void readDTD(char* fileName){
 }
 
 
+void splitDtd(){
+    for(int i = 0 ; i < dtd.length ; i+=1){
+        printf("|%s|" , dtd.array[i]);
+        // splitDtdLine(dtd.array[i]);
+    }
+}
+
 void splitDtdLine(char* line){
 
     char* left = strchr(line , '!')+1;
@@ -40,7 +47,12 @@ void splitDtdLine(char* line){
     }
 
     right = strchr(left , ' ');
+    
+    
     // *right = '\0';
+    if(right < left ){
+        return;
+    }
     printf("%d eheh , %d ahah , %d hihi \n", strncmp(left , "ELEMENT" , right - left), strncmp(left , "ATTLIST" , right - left) , strcmp(left , "ENTITY") ) ;
 
     while(  (right = strpbrk(left , " >") ) != NULL  ){

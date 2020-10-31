@@ -27,12 +27,12 @@ int main(int argc, char* argv[]){
     // printf("%s\n" , dtd.array[2]);
     // printf("\n");
 
-   splitDtdLine(dtd.array[3]);
+   splitDtd();
 
     printf("\n");
 
     
-    menu();
+    // menu();
     
     freeFileAsArray(dtd);
     freeFileAsArray(xml);

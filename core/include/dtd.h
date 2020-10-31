@@ -34,6 +34,11 @@ typedef struct attribute{
     correspondant à chaque ligne de la DTD fournie*/
 void readDTD(char* filename);
 
+/*  parcours la structure fileAsArray dtd , 
+    et appelle splitDtdLine*/
+void splitDtd(void);
+
+
 /*  la chaîne de caractère envoyée est traitée puis 
     découpée en 3 parties pour renvoyer une structure 
     adéquate */
