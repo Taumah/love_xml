@@ -37,7 +37,7 @@ void insertFile(){
 
   //Partie PathXml
   printf("Donnes moi le chemin complet de ton fichier XML: ");
-  fgets(filePathXml,20,stdin);
+  fgets(filePathXml,sizeof(filePathXml),stdin);
   fflush(stdin);
 
   /*
@@ -47,7 +47,7 @@ void insertFile(){
 
   //Partie NomXML
   printf("Donnes moi un nom pour ton fichier XML: ");
-  fgets(nameXml[increment],20,stdin);
+  fgets(nameXml[increment],sizeof(nameXml),stdin);
   fflush(stdin); 
 
  
@@ -55,7 +55,7 @@ void insertFile(){
 
   //Partie PathDTD
   printf("Donne moi le chemin complet de ta DTD: ");
-  fgets(filePathDtd,20,stdin);
+  fgets(filePathDtd,sizeof(filePathDtd),stdin);
   fflush(stdin);
 
   /*
@@ -65,7 +65,7 @@ void insertFile(){
 
   //Partie NomDTD
   printf("Donnes moi un nom pour ta DTD: ");
-  fgets(nameDtd[increment],20,stdin);
+  fgets(nameDtd[increment],sizeof(nameDtd),stdin);
   fflush(stdin);
 
   increment++; // on l'increment car on as un nouvelle enregistrement
