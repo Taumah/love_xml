@@ -77,7 +77,6 @@ void insertFile(){
   //printf("%s%s",filePathDtd,nameDtd);
 
   printf("\n");
-
 }
 
 void afficheEnregistrement(){
