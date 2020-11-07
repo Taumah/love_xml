@@ -22,12 +22,14 @@ int main(int argc, char* argv[]){
     char* fileDTD = "test/dtds/test1.dtd";
     char* fileXML = "test/XML/test.xml";
 
-    readDTD(fileDTD);
+    //readDTD(fileDTD);
     
-    readXML(fileXML);
+    //readXML(fileXML);
 
-    splitDtd();
+    //splitDtd();
 //    splitDtdLine(f_dtd.array[10]);
+
+    menu();
 
     freeFileAsArray(f_dtd);
     freeFileAsArray(f_xml);

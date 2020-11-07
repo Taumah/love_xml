@@ -17,7 +17,7 @@ compile: $(SRC)
 
 build:
 	@echo "*********** Compilation execution *********** "
-	@/usr/bin/time --format="Build Duration: %E" make -s compile
+	make -s compile
 
 launch:
 	@echo "\n\n"

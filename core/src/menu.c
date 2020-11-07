@@ -1,12 +1,16 @@
 #include "../include/menu.h"
 
+char nameXml[20][20], nameDtd[20][20];
+char filePathXml[40], filePathDtd[40];
+
+int increment;
 
 void menu(){
   int choice;
   do{
     printf(	"--------Menu-------- \n"	\
-    		"1: blblbl \n"				\
-    		"2: blblbl \n"				\
+    		"1: Effectuez un enregistrement \n"				\
+    		"2: Voir les enregistrements \n"				\
 			"3. Exit \n"				\
 			"Entre ton choix! "
 			);
@@ -14,11 +18,12 @@ void menu(){
     scanf(" %d",&choice);
 
     switch(choice){
-      case 1: 
-        printf("je suis une fleur \n\n "); // apelle de la methode une permettant de prendre un fichier dtd et un xml 
+      case 1:
+        insertFile();
+        // apelle de la methode une permettant de prendre un fichier dtd et un xml 
         break;
       case 2: 
-        printf("je suis une fleur blouge \n\n"); 
+        afficheEnregistrement(); 
         break;
       case 3: 
         printf("Casse toi petit merde \n");
