@@ -2,6 +2,7 @@
 
 char nameXml[20][20], nameDtd[20][20];
 char filePathXml[40], filePathDtd[40];
+char clear[20];
 
 int increment;
 
@@ -16,11 +17,11 @@ void menu(){
 			);
 			
     scanf(" %d",&choice);
+    
 
     switch(choice){
       case 1:
-        insertFile();
-        // apelle de la methode une permettant de prendre un fichier dtd et un xml 
+        insertFile(); // apelle de la methode une permettant de prendre un fichier dtd et un xml 
         break;
       case 2: 
         afficheEnregistrement(); 
@@ -36,32 +37,32 @@ void menu(){
   }while (choice !=3);
 }
 
+
+
 void insertFile(){
-  
+  fgets(clear,sizeof(clear),stdin);
+
   //Partie XML
 
   //Partie PathXml
   printf("Donnes moi le chemin complet de ton fichier XML: ");
   fgets(filePathXml,sizeof(filePathXml),stdin);
-  fflush(stdin);
+  
 
   /*
   ATTENTION
-  Faire une detection du fichier inexistant
+  Faire une detection du fichier inexistant 
   */
 
   //Partie NomXML
   printf("Donnes moi un nom pour ton fichier XML: ");
   fgets(nameXml[increment],sizeof(nameXml),stdin);
-  fflush(stdin); 
-
  
   // Partie DTD 
 
   //Partie PathDTD
   printf("Donne moi le chemin complet de ta DTD: ");
   fgets(filePathDtd,sizeof(filePathDtd),stdin);
-  fflush(stdin);
 
   /*
   ATTENTION
@@ -71,7 +72,6 @@ void insertFile(){
   //Partie NomDTD
   printf("Donnes moi un nom pour ta DTD: ");
   fgets(nameDtd[increment],sizeof(nameDtd),stdin);
-  fflush(stdin);
 
   increment++; // on l'increment car on as un nouvelle enregistrement
 

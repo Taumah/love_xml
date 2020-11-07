@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
     //readXML(fileXML);
 
     //splitDtd();
-//    splitDtdLine(f_dtd.array[10]);
+    //splitDtdLine(f_dtd.array[10]);
 
     menu();
 
