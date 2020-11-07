@@ -5,9 +5,10 @@ extern fileAsArray f_xml;
 
 void readXML(char* fileName){
 
-    if(verifExtension(fileName) == 1){
+    if(verifExtension(fileName) == false){
         return;
     }
+    printf("yo?");
 
     FILE* XML = fopen(fileName , "rw");
 
@@ -20,7 +21,7 @@ void readXML(char* fileName){
       
 
     while (  fgets( f_xml.array[line_number]  , 200 , XML) != NULL ){
-        line_number+= 1;    
+        line_number+= 1;  
     }
 
     f_xml.length = line_number;
@@ -40,11 +41,11 @@ int verifExtension(char* fileXML){
 
     if(   strcmp("xml" , getFilenameExt(fileXML) )  != 0  ){
         printf("ceci n'est pas un fichier XML\n");
-        return 1;
+        return false;
     }else
     {
         printf("extension valide \n");
-        return 0;
+        return true;
     }
 }
 

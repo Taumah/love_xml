@@ -7,11 +7,14 @@
 
 extern fileAsArray f_dtd;
 
+doctypeDef doctypeDTD;
+
 off_t getFileSize(char* fileName){
     struct stat stats ; 
-    
-    if( stat(fileName, &stats) == false ){
-        printf("Erreur lecture info fichiers");
+    printf("%s\n" , fileName);
+
+    if( stat(fileName, &stats) != 0 ){
+        printf("Erreur lecture info fichiers\n");
         exit(EXIT_FAILURE);
     } 
     
@@ -29,17 +32,35 @@ void readDTD(char* fileName){
     checkMalloc(buffer);
 
     FILE* f = fopen(fileName , "r");
-
+    checkfOpen(f);
     fread(buffer , fileSize , sizeof(char) , f);
 
+    // fillDoctypeDef(buffer);
     // printf("%s" , buffer);
 
+
+    char* defDebut = strchr(buffer , '[');
+    
+    char* defFin = strrchr(buffer , ']');
+    
+    char* left = strchr(buffer , '<');
+
+    char* right=NULL;
+
+    char* tmp = malloc(500);
+    // while( right = strchr(left , '>') ,  right != NULL && right < defFin  ){
+
+    //     left = strchr(right , '<');
+
+    //     strncpy(tmp, left , right-left);
+
+    //     printf("%s\n",  tmp);
+    // }
+
+    free(tmp);
+    // printf("%ld" , defFin-defDebut);
     free(buffer);
-
     fclose(f);
-
-
-
 }
 
 void doubleDtdSize(){
@@ -111,3 +132,7 @@ void splitDtdLine(char* line){
 }
 
 
+
+void fillDoctypeDef(char *buffer){
+    (void)buffer;
+}

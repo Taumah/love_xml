@@ -24,8 +24,8 @@ int main(int argc, char* argv[]){
     initGlobals();
 
 
-    char* fileDTD = "test/dtds/test1.dtd";
-    char* fileXML = "test/XML/test.xml";
+    char* fileDTD = "test/dtds/test2.dtd";
+    // char* fileXML = "test/XML/test.xml";
 
     readDTD(fileDTD);
     

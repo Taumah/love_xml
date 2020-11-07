@@ -62,3 +62,10 @@ void splitDtdLine(char* line);
     de la structure fileAsArray pour permettre de 
     continuer la lecture du fichier */
 void doubleDtdSize();
+
+
+/*  reçoit le contenu du fichier sous 
+    la forme d'un tableau, puis rempli
+    les différents champs de la structure 
+    doctypeDef */
+void fillDoctypeDef(char *buffer);
