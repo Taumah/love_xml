@@ -1,10 +1,28 @@
 #include "../include/menu.h"
 
 char nameXml[20][20], nameDtd[20][20];
-char filePathXml[40], filePathDtd[40];
+char filePathXml[80], filePathDtd[80];
 char clear[20];
 
 int increment;
+
+int existingFile(char *filePath){
+  int lenght = strlen(filePath);
+
+  filePath[lenght-1] = '\0';
+
+  // printf("%s\n %d\n",filePath2, lenght); vérifier si la taille est bonne 
+  // ./test/XML/coucouLesAmisBijour.xml
+  // ./test/dtds/grossTDdeMort.dtd
+
+  FILE *fichier;
+  fichier = fopen(filePath,"r+");
+  if(fichier==NULL){
+    printf("Impossible d'ouvrir le fichier ! \n");
+    return 0;
+  }
+  return 1;
+}
 
 void menu(){
   int choice;
@@ -42,36 +60,38 @@ void menu(){
 void insertFile(){
   fgets(clear,sizeof(clear),stdin);
 
-  //Partie XML
+  /*
+  Partie XML
+  */
 
   //Partie PathXml
-  printf("Donnes moi le chemin complet de ton fichier XML: ");
-  fgets(filePathXml,sizeof(filePathXml),stdin);
-  
+  do{
+    printf("Donnes moi le chemin complet de ton fichier XML: ");
+    fgets(filePathXml,sizeof(filePathXml),stdin);
+  }
+  while(!existingFile(filePathXml));
 
-  /*
-  ATTENTION
-  Faire une detection du fichier inexistant 
-  */
 
   //Partie NomXML
   printf("Donnes moi un nom pour ton fichier XML: ");
   fgets(nameXml[increment],sizeof(nameXml),stdin);
  
-  // Partie DTD 
+  /* 
+  Partie DTD 
+  */
 
   //Partie PathDTD
-  printf("Donne moi le chemin complet de ta DTD: ");
-  fgets(filePathDtd,sizeof(filePathDtd),stdin);
+  do{
+     printf("Donne moi le chemin complet de ta DTD: ");
+    fgets(filePathDtd,sizeof(filePathDtd),stdin);
+  }
+  while(!existingFile(filePathDtd));
 
-  /*
-  ATTENTION
-  Faire une detection du fichier inexistant
-  */
 
   //Partie NomDTD
   printf("Donnes moi un nom pour ta DTD: ");
   fgets(nameDtd[increment],sizeof(nameDtd),stdin);
+  
 
   increment++; // on l'increment car on as un nouvelle enregistrement
 

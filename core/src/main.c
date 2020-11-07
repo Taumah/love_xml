@@ -19,8 +19,8 @@ int main(int argc, char* argv[]){
     initGlobals();
 
 
-    char* fileDTD = "test/dtds/test1.dtd";
-    char* fileXML = "test/XML/test.xml";
+    char* fileDTD = "./test/dtds/test1.dtd";
+    char* fileXML = "./test/XML/test.xml";
 
     //readDTD(fileDTD);
     
@@ -30,6 +30,10 @@ int main(int argc, char* argv[]){
     //splitDtdLine(f_dtd.array[10]);
 
     menu();
+
+    //existingFile(fileXML);
+
+    printf("\n");
 
     freeFileAsArray(f_dtd);
     freeFileAsArray(f_xml);
