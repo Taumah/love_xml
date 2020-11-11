@@ -5,21 +5,15 @@
 #include <sys/stat.h>
 #include <time.h>
 
-extern fileAsArray f_dtd;
-
-doctypeDef doctypeDTD;
+extern doctypeDef dtd;
 
 off_t getFileSize(char* fileName){
     struct stat stats ; 
-    printf("%s\n" , fileName);
 
     if( stat(fileName, &stats) != 0 ){
         printf("Erreur lecture info fichiers\n");
         exit(EXIT_FAILURE);
     } 
-    
-    printf("File size:                %lld bytes\n",
-            (long long) stats.st_size);
 
     return stats.st_size;
 }
@@ -28,111 +22,112 @@ void readDTD(char* fileName){
 
     unsigned long long fileSize = getFileSize(fileName);
 
-    char* buffer = malloc(sizeof(char) * fileSize);
+    char* buffer = malloc(sizeof(char) * fileSize+1);
     checkMalloc(buffer);
+
 
     FILE* f = fopen(fileName , "r");
     checkfOpen(f);
     fread(buffer , fileSize , sizeof(char) , f);
-
-    // fillDoctypeDef(buffer);
-    // printf("%s" , buffer);
+    fclose(f);
 
 
+    fillDoctypeDef(buffer);
+
+    
+}
+
+void initDtd(){
+    dtd.elements    = malloc(sizeof(element)    * DTD_FIELDS_DEFAULT_LENGTH);
+    checkMalloc(dtd.elements);
+    dtd.attributes  = malloc(sizeof(attribute)  * DTD_FIELDS_DEFAULT_LENGTH);
+    checkMalloc(dtd.attributes);
+    dtd.entities    = malloc(sizeof(entity)     * DTD_FIELDS_DEFAULT_LENGTH);
+    checkMalloc(dtd.entities);
+
+  
+}
+
+void freeDtd(){
+    free(dtd.elements);
+    free(dtd.attributes);
+    free(dtd.entities);
+}
+
+void splitDtdLine(char* line){
+    switch ( *(line+1) )
+    {
+    case 'L': // eLement
+        addElement(line);
+        break;
+    
+    case 'T': // aTtlist
+        addAttribute(line);
+        break;
+        
+    case 'N': // eNtity
+        addEntity(line);
+        break;
+    default:
+        printf("NULL\n");
+        break;
+    }
+
+    // printf("%d eheh \n", strncmp(left , "ELEMENT" , right - left) );
+
+}
+
+int fillDoctypeDef(char* buffer){
+    
     char* defDebut = strchr(buffer , '[');
     
     char* defFin = strrchr(buffer , ']');
     
-    char* left = strchr(buffer , '<');
+    char* left = strchr(defDebut , '!');
 
-    char* right=NULL;
+    char* right=strchr(defDebut , '>');
 
     char* tmp = malloc(500);
-    // while( right = strchr(left , '>') ,  right != NULL && right < defFin  ){
+    checkMalloc(tmp);
 
-    //     left = strchr(right , '<');
+    while( right < defFin ){
+        strncpy(tmp , left+1 , right-left); // +1 to ommit the extra "!" at the beginning of the string
+        tmp[right-left] = '\0';
+        // printf("|%s|\n\n" , tmp);
+        
+        splitDtdLine(tmp);
+        
+        
+        left = strchr(right , '!');
+        if(left == NULL){
+            break;
+        }
+        right = strchr(left , '>');
 
-    //     strncpy(tmp, left , right-left);
-
-    //     printf("%s\n",  tmp);
-    // }
+    }
 
     free(tmp);
-    // printf("%ld" , defFin-defDebut);
     free(buffer);
-    fclose(f);
-}
-
-void doubleDtdSize(){
-    int originalSize = f_dtd.length;
-    int endSize = f_dtd.length*2;
-
-    char** newArray = malloc(sizeof(char*)* endSize);
-    checkMalloc(newArray);
-
-    int i =0;
-    for (; i < originalSize; i+=1){
-
-        newArray[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
-        checkMalloc(newArray[i]);
-
-        strcpy(newArray[i] , f_dtd.array[i]);        
-    }
-
-    for (; i < endSize; i+=1){
-
-        newArray[i] = malloc(sizeof(char*) * FILE_AS_ARRAY_LINE_LENGTH);
-        checkMalloc(newArray[i]);
-    }
-
-    f_dtd.array = newArray;
-    f_dtd.length = endSize;
-
+    
+    return 0;
 }
 
 
-
-void splitDtd(){
-    for(int i = 0 ; i < f_dtd.length ; i+=1){
-        printf("%s" , f_dtd.array[i]);
-        // splitDtdLine(f_dtd.array[i]);
-    }
-}
-
-void splitDtdLine(char* line){
-    
-    char* left = strchr(line , '!');
-    char* right = NULL;
-
-    if(left == NULL){ // means no "!" found.
-        printf("ligne vide\n");
-        return;
-    }
-
-    left +=1;
-
-    right = strchr(left , ' ');
-    
-    
-    *right = '\0';
-    // if(right < left ){
-    //     return;
-    // }
-    // printf("%d eheh \n", strncmp(left , "ELEMENT" , right - left) );
-
-    while(  (right = strpbrk(left , " >") ) != NULL  ){
-        
-        *right = '\0';
-
-        printf( "%s \n" , left);
-
-        strcpy(left ,  right+1);
-    
-    }
+void addElement(char *line){
+    printf("adding element\n");
+    (void)line;
 }
 
 
+void addAttribute(char *line){
+    printf("adding attribute\n");
+    (void)line;
+    
+}
 
-void fillDoctypeDef(char *buffer){
-    (void)buffer;
+
+void addEntity(char *line){
+    printf("adding entity\n");
+    (void)line;
+    
 }

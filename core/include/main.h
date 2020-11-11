@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define FILE_AS_ARRAY_DEFAULT_LENGTH    40
-#define FILE_AS_ARRAY_LINE_LENGTH       200
+#define DTD_FIELDS_DEFAULT_LENGTH    40
 
 #define false 0
 #define true 1

@@ -41,16 +41,20 @@ typedef struct s_doctypeDef{
     entity* entities;
 }doctypeDef;
 
+void initDtd(void);
+void freeDtd(void);
 
 
-/*  readDTD reçoit une string en parametre
-    renvoi un tableau de chaines de caractères 
-    correspondant à chaque ligne de la DTD fournie*/
+
+/*  getFileSize renvoie sous la forme d'un long int
+    la taille nette du fichier.*/
+off_t getFileSize(char* fileName);
+
+
+/*  readDTD reçoit une chaîne de caractères en
+    parametre et rempli la structure DoctypeDef*/
 void readDTD(char* filename);
 
-/*  parcours la structure fileAsArray dtd , 
-    et appelle splitDtdLine*/
-void splitDtd(void);
 
 
 /*  la chaîne de caractère envoyée est traitée puis 
@@ -67,5 +71,21 @@ void doubleDtdSize();
 /*  reçoit le contenu du fichier sous 
     la forme d'un tableau, puis rempli
     les différents champs de la structure 
-    doctypeDef */
-void fillDoctypeDef(char *buffer);
+    doctypeDef. Renvoie 1 si une erreur
+    s'est produite, 0 sinon*/
+int fillDoctypeDef(char *buffer);
+
+/*  ajoute un élement de type ELEMENT
+    à la strucutre DoctypeDef*/
+void addElement(char *line);
+
+
+/*  ajoute un élement de type ATTLIST
+    à la strucutre DoctypeDef*/
+void addAttribute(char *line);
+
+
+
+/*  ajoute un élement de type ENTITY
+    à la strucutre DoctypeDef*/
+void addEntity(char *line);
