@@ -1,9 +1,5 @@
 #include "../include/dtd.h"
-#include "../include/main.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <time.h>
 
 extern doctypeDef dtd;
 
@@ -33,11 +29,17 @@ void readDTD(char* fileName){
 
 
     fillDoctypeDef(buffer);
+    free(buffer);
+
 
     
 }
 
 void initDtd(){
+    
+    dtd.cursorAttributes = dtd.cursorElements   = dtd.cursorEntities    = 0;
+    dtd.sizeAttributes   = dtd.sizeElements     = dtd.sizeEntities      = DTD_FIELDS_DEFAULT_LENGTH;
+
     dtd.elements    = malloc(sizeof(element)    * DTD_FIELDS_DEFAULT_LENGTH);
     checkMalloc(dtd.elements);
     dtd.attributes  = malloc(sizeof(attribute)  * DTD_FIELDS_DEFAULT_LENGTH);
@@ -45,15 +47,28 @@ void initDtd(){
     dtd.entities    = malloc(sizeof(entity)     * DTD_FIELDS_DEFAULT_LENGTH);
     checkMalloc(dtd.entities);
 
-  
+    
 }
 
 void freeDtd(){
+
+    for (int i = 0; i < dtd.cursorElements; i+=1)
+    {
+        freeElement(dtd.elements[i]);
+    }
+    for (int i = 0; i < dtd.cursorAttributes; i+=1)
+    {
+        freeAttribute(dtd.attributes[i]);
+    }
+    for (int i = 0; i < dtd.cursorEntities; i+=1)
+    {
+        freeEntity(dtd.entities[i]);
+    }
     free(dtd.elements);
     free(dtd.attributes);
     free(dtd.entities);
 }
-
+//TODO : create doubleDtdField someWhere ahah
 void splitDtdLine(char* line){
     switch ( *(line+1) )
     {
@@ -93,7 +108,6 @@ int fillDoctypeDef(char* buffer){
     while( right < defFin ){
         strncpy(tmp , left+1 , right-left); // +1 to ommit the extra "!" at the beginning of the string
         tmp[right-left] = '\0';
-        // printf("|%s|\n\n" , tmp);
         
         splitDtdLine(tmp);
         
@@ -106,28 +120,48 @@ int fillDoctypeDef(char* buffer){
 
     }
 
-    free(tmp);
-    free(buffer);
-    
+    free(tmp);    
     return 0;
 }
 
 
 void addElement(char *line){
-    printf("adding element\n");
-    (void)line;
+
+    
+    dtd.elements[dtd.cursorElements].name = getFirstWord(line);
+    printf("|%s|\n",dtd.elements[dtd.cursorElements].name);
+    dtd.elements += 1;
+
 }
 
-
 void addAttribute(char *line){
-    printf("adding attribute\n");
-    (void)line;
     
+    dtd.attributes[dtd.cursorAttributes].name = getFirstWord(line);
+    printf("|%s|\n",dtd.attributes[dtd.cursorAttributes].name);
+
+    dtd.cursorAttributes += 1;
+
 }
 
 
 void addEntity(char *line){
-    printf("adding entity\n");
-    (void)line;
     
+    dtd.entities[dtd.cursorEntities].name = getFirstWord(line);
+    printf("|%s|\n",dtd.entities[dtd.cursorEntities].name);
+
+    dtd.cursorEntities += 1;
 }
+
+char* getFirstWord(char *line){
+    char* wordDbt = strpbrk(line , " \n");
+
+    char* wordEnd = strpbrk(wordDbt+1 , " \n");
+
+    char* word = malloc(sizeof(char) * (wordEnd-wordDbt)  + 1);
+
+    strncpy(word , wordDbt+1 , wordEnd-wordDbt);
+
+    *(word+ (wordEnd-wordDbt)-1 ) = '\0'; 
+
+    return word;
+} 

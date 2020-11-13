@@ -1,44 +1,37 @@
+#ifndef DTD_H
+#define DTD_H
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+
+#include "../include/main.h"
+#include "../include/utils.h"
+
+#include "../include/objects/Element.h"
+#include "../include/objects/Attribute.h"
+#include "../include/objects/Entity.h"
 
 
-typedef struct s_element{
-    //pour plus d'infos... => https://www.w3schools.com/xml/xml_dtd_elements.asp
-
-    char* name;  // nom de l'element
-
-
-    /*  peut être soit un mot clé (EMPTY , ANY....) ou un type 
-        de contenu sous forme de tableau : 
-            -(balise1,balise2,balise3... baliseN) 
-        chaque balise est suivi d'un caractère précisant son 
-        nombre d'occurence (si aucun , considérer que c'est 1 occurence forcée)     
-    */
-    char* content; 
-
-}element;
-
-typedef struct s_attribute{
-    //pour plus d'infos... => https://www.w3schools.com/xml/xml_dtd_attributes.asp
-
-    char* elementName;
-    char* name;
-    char* type;
-    char* value;
-
-}attribute;
-
-typedef struct s_entity{
-    char* name; // mot clé de l'entité
-    char* shortcut; // resultat du mot clé 
-}entity;
-
+#define DTD_FIELDS_DEFAULT_LENGTH    40
 
 typedef struct s_doctypeDef{
     element* elements;
+    short cursorElements;
+    short sizeElements;
+
     attribute* attributes;
+    short cursorAttributes;
+    short sizeAttributes;
+    
     entity* entities;
+    short cursorEntities;
+    short sizeEntities;
+
 }doctypeDef;
 
 void initDtd(void);
@@ -62,11 +55,6 @@ void readDTD(char* filename);
     adéquate */
 void splitDtdLine(char* line);
 
-/*  double la taille du tableau de chaine de caractère
-    de la structure fileAsArray pour permettre de 
-    continuer la lecture du fichier */
-void doubleDtdSize();
-
 
 /*  reçoit le contenu du fichier sous 
     la forme d'un tableau, puis rempli
@@ -89,3 +77,18 @@ void addAttribute(char *line);
 /*  ajoute un élement de type ENTITY
     à la strucutre DoctypeDef*/
 void addEntity(char *line);
+
+/*  reçoit une balise de la dtd
+    et en renvoie le premier mot
+    (l'attribut 'name' de l'objet)
+    */
+char* getFirstWord(char *line);
+
+
+
+
+
+
+
+
+#endif

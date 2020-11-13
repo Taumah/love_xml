@@ -6,7 +6,7 @@ EXTRA_CFLAGS= -Wshadow -Wformat-overflow -Wformat-truncation -g3
 
 CLIBS= `pkg-config --libs gtk+-3.0`
 
-SRC= ./core/src/*.c ./core/include/*.h
+SRC= ./core/src/*.c ./core/include/*.h   ./core/src/objects/*.c ./core/include/objects/*.h 
 
 output= ./bin/release.exe
 
