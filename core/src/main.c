@@ -15,8 +15,12 @@ int main(int argc, char* argv[]){
 
     readDTD(fileDTD);
     
-    // readXML(fileXML);
     freeDtd();
+    
+    // menu();
+
+    //existingFile(fileXML);
+    printf("\n");
     return 0;
 
 }
