@@ -93,7 +93,9 @@ void splitDtdLine(char* line){
 }
 
 int fillDoctypeDef(char* buffer){
-    
+    //TODO
+    //TODO IMPORTANT : add field rootElement(basically the main element) and create function that read this 1 elem
+    //TODO
     char* defDebut = strchr(buffer , '[');
     
     char* defFin = strrchr(buffer , ']');
@@ -147,6 +149,9 @@ void addAttribute(char *line){
 
 }
 
+void addAttributeWithGivenElementName(char *line , char* defaultElementName){
+    (void)line;(void)defaultElementName;
+}
 
 void addEntity(char *line){
     

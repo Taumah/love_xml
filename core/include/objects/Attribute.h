@@ -7,7 +7,7 @@ typedef struct s_attribute{
     char* elementName;
     char* name;
     char* type;
-    char* value;
+    char* defaultVal;
 
 }attribute;
 

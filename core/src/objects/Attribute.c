@@ -14,7 +14,7 @@ void freeAttribute(attribute attr){
         free(attr.type);
     }
 
-    if(attr.value != NULL){
-        free(attr.value);
+    if(attr.defaultVal != NULL){
+        free(attr.defaultVal);
     }
 }

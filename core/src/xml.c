@@ -9,13 +9,13 @@ void readXML(char* fileName){
     }
     printf("yo?");
 
-    FILE* XML = fopen(fileName , "rw");
+    FILE* fileXML = fopen(fileName , "rw");
 
-    if( XML == NULL){
+    if( fileXML == NULL){
         printf("erreur à l'ouverture");
         exit(1);
     }
-    fclose(XML);    
+    fclose(fileXML);    
 
 }
 
