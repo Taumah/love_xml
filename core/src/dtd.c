@@ -102,14 +102,14 @@ int fillDoctypeDef(char* buffer){
 
     char* right=strchr(defDebut , '>');
 
-    char* tmp = malloc(500);
-    checkMalloc(tmp);
+    char* block = malloc(500);
+    checkMalloc(block);
 
     while( right < defFin ){
-        strncpy(tmp , left+1 , right-left); // +1 to ommit the extra "!" at the beginning of the string
-        tmp[right-left] = '\0';
+        strncpy(block , left+1 , right-left); // +1 to ommit the extra "!" at the beginning of the string
+        block[right-left] = '\0';
         
-        splitDtdLine(tmp);
+        splitDtdLine(block);
         
         
         left = strchr(right , '!');
@@ -120,7 +120,7 @@ int fillDoctypeDef(char* buffer){
 
     }
 
-    free(tmp);    
+    free(block);    
     return 0;
 }
 
@@ -129,16 +129,20 @@ void addElement(char *line){
 
     
     dtd.elements[dtd.cursorElements].name = getFirstWord(line);
-    printf("|%s|\n",dtd.elements[dtd.cursorElements].name);
+    // printf("|%s|\n" , dtd.elements[dtd.cursorElements].name);
+
+    dtd.elements[dtd.cursorElements].content = getEndOfBlock(line , 8);// 8 for e l e m e n t and trailing space
+    printf("|%s|%s|\n" ,dtd.elements[dtd.cursorElements].name, dtd.elements[dtd.cursorElements].content);
+
     dtd.cursorElements += 1;
 
 }
 
 void addAttribute(char *line){
     
-    dtd.attributes[dtd.cursorAttributes].name = getFirstWord(line);
-    printf("|%s|\n",dtd.attributes[dtd.cursorAttributes].name);
+    dtd.attributes[dtd.cursorAttributes].elementName = getFirstWord(line);
 
+    printf("|%s|\n" , dtd.attributes[dtd.cursorAttributes].elementName);
     dtd.cursorAttributes += 1;
 
 }
@@ -147,21 +151,42 @@ void addAttribute(char *line){
 void addEntity(char *line){
     
     dtd.entities[dtd.cursorEntities].name = getFirstWord(line);
-    printf("|%s|\n",dtd.entities[dtd.cursorEntities].name);
+    
 
+    dtd.entities[dtd.cursorEntities].shortcut = getEndOfBlock(line , 7); // 7= 6 for e n t i t y and trailing space
+    printf("|%s|%s|\n",dtd.entities[dtd.cursorEntities].name, dtd.entities[dtd.cursorEntities].shortcut);
+    
     dtd.cursorEntities += 1;
 }
 
-char* getFirstWord(char *line){
-    char* wordDbt = strpbrk(line , " \n");
+char* getFirstWord(char *block){
+    char* wordDbt = strpbrk(block , " \n");
 
     char* wordEnd = strpbrk(wordDbt+1 , " \n");
 
-    char* word = malloc(sizeof(char) * (wordEnd-wordDbt)  + 1);
+    char* word = malloc(sizeof(char) * abs(wordEnd-wordDbt)  + 1);
+    checkMalloc(word);
 
     strncpy(word , wordDbt+1 , wordEnd-wordDbt);
 
     *(word+ (wordEnd-wordDbt)-1 ) = '\0'; 
 
     return word;
-} 
+}
+
+char* getEndOfBlock(char *block, int decay){
+
+    char* blockDbt = strpbrk(block+decay , " \n\r\0");
+    
+    char* blockEnd = strchr(blockDbt+1 , '>');
+
+    char* word = malloc(sizeof(char) * (blockEnd-blockDbt)  + 1);
+    checkMalloc(word);
+
+    strncpy(word , blockDbt+1 , blockEnd-blockDbt);
+
+    *(word+ (blockEnd-blockDbt)-1 ) = '\0'; 
+
+    return word;
+
+}

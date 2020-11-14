@@ -85,7 +85,10 @@ void addEntity(char *line);
 char* getFirstWord(char *line);
 
 
-
+/*  reçoit une balise de la dtd
+    et renvoie la derniere partie
+    de cette balise*/
+char* getEndOfBlock(char *block, int decay);
 
 
 

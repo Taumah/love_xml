@@ -24,6 +24,7 @@ launch:
 	@$(output)
 
 all: build launch
+	@echo "\nfin du programme\n"
 
 debug: build
 	gdb $(output)
