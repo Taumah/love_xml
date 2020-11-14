@@ -16,8 +16,6 @@ int main(int argc, char* argv[]){
     readDTD(fileDTD);
     
     // readXML(fileXML);
-
-
     freeDtd();
     return 0;
 

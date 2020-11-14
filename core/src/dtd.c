@@ -130,7 +130,7 @@ void addElement(char *line){
     
     dtd.elements[dtd.cursorElements].name = getFirstWord(line);
     printf("|%s|\n",dtd.elements[dtd.cursorElements].name);
-    dtd.elements += 1;
+    dtd.cursorElements += 1;
 
 }
 
