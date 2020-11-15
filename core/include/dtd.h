@@ -94,4 +94,9 @@ void doubleDtdField(doctypeDefField field);
     cas échant*/
 char* getDefaultVal(char*);
 
+
+/*  */
+char *getTheNWord(char* block , int N);
+
+
 #endif

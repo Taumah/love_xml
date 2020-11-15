@@ -148,8 +148,15 @@ void addAttribute(char *line){
 
     
     dtd.attributes[dtd.cursorAttributes].defaultVal = getDefaultVal(line);
+
+    dtd.attributes[dtd.cursorAttributes].name = getTheNWord(line , 2);
+
+    dtd.attributes[dtd.cursorAttributes].type = getTheNWord(line , 3);
     
-    printf("|%s|%s|\n" , dtd.attributes[dtd.cursorAttributes].elementName , dtd.attributes[dtd.cursorAttributes].defaultVal);
+    printf("|%s|%s|%s|%s|\n" ,  dtd.attributes[dtd.cursorAttributes].elementName    , 
+                                dtd.attributes[dtd.cursorAttributes].defaultVal     ,
+                                dtd.attributes[dtd.cursorAttributes].name           ,
+                                dtd.attributes[dtd.cursorAttributes].type);
     
     
     
@@ -296,4 +303,39 @@ char* getDefaultVal(char* line){
     return word;
 
     
+}
+
+
+
+char *getTheNWord(char* block , int N){
+    char* leftOfWord = strpbrk(block , " \n\r") ;
+    char *rightOfWord = NULL;
+    char *word = NULL;
+    int Nword = 1;
+    int strlen = 0;
+
+    while ( (leftOfWord = strpbrk(leftOfWord+1 , " \n\r>")+1) != NULL )
+    {
+        
+
+        Nword += 1;
+        if(Nword == N){
+            break;
+        }
+
+    }
+
+    rightOfWord = strpbrk(leftOfWord , " \n\r>");
+
+
+    strlen = rightOfWord -leftOfWord;
+
+    word = malloc(sizeof(char) * strlen  + 1);
+
+    strncpy(word , leftOfWord , strlen );
+
+    *(word + strlen ) = '\0';
+
+    return word;
+
 }
