@@ -11,3 +11,8 @@ void freeElement(element elem){
     }
 
 }
+
+
+void printElem(element elem){
+    printf("|%s|%s|\n" , elem.name , elem.content);
+}

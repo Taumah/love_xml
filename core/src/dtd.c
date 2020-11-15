@@ -14,6 +14,22 @@ off_t getFileSize(char* fileName){
     return stats.st_size;
 }
 
+
+void printDtd(){
+    for (short i = 0; i < dtd.cursorElements; i+=1)
+    {
+        printElem(dtd.elements[i]);
+    }
+    for (short i = 0; i < dtd.cursorAttributes; i+=1)
+    {
+        printAttr(dtd.attributes[i]);
+    }
+    for (short i = 0; i < dtd.cursorEntities; i+=1)
+    {
+        printEnti(dtd.entities[i]);
+    }
+}
+
 void readDTD(char* fileName){
 
     unsigned long long fileSize = getFileSize(fileName);
@@ -130,7 +146,7 @@ void addElement(char *line){
     // printf("|%s|\n" , dtd.elements[dtd.cursorElements].name);
 
     dtd.elements[dtd.cursorElements].content = getEndOfBlock(line , 8);// 8 for e l e m e n t and trailing space
-    printf("|%s|%s|\n" ,dtd.elements[dtd.cursorElements].name, dtd.elements[dtd.cursorElements].content);
+    // printf("|%s|%s|\n" ,dtd.elements[dtd.cursorElements].name, dtd.elements[dtd.cursorElements].content);
 
     dtd.cursorElements += 1;
 
@@ -153,10 +169,10 @@ void addAttribute(char *line){
 
     dtd.attributes[dtd.cursorAttributes].type = getTheNWord(line , 3);
     
-    printf("|%s|%s|%s|%s|\n" ,  dtd.attributes[dtd.cursorAttributes].elementName    , 
-                                dtd.attributes[dtd.cursorAttributes].defaultVal     ,
-                                dtd.attributes[dtd.cursorAttributes].name           ,
-                                dtd.attributes[dtd.cursorAttributes].type);
+    // printf("|%s|%s|%s|%s|\n" ,  dtd.attributes[dtd.cursorAttributes].elementName    , 
+    //                             dtd.attributes[dtd.cursorAttributes].defaultVal     ,
+    //                             dtd.attributes[dtd.cursorAttributes].name           ,
+    //                             dtd.attributes[dtd.cursorAttributes].type);
     
     
     
@@ -180,7 +196,7 @@ void addEntity(char *line){
     
 
     dtd.entities[dtd.cursorEntities].shortcut = getEndOfBlock(line , 7); // 7= 6 for e n t i t y and trailing space
-    printf("|%s|%s|\n",dtd.entities[dtd.cursorEntities].name, dtd.entities[dtd.cursorEntities].shortcut);
+    // printf("|%s|%s|\n",dtd.entities[dtd.cursorEntities].name, dtd.entities[dtd.cursorEntities].shortcut);
     
     dtd.cursorEntities += 1;
 

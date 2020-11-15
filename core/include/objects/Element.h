@@ -24,3 +24,9 @@ void addElement(char *line);
 
 
 void freeElement(element);
+
+
+
+/*  affiche les différents champs de 
+    l'element envoyé sur une ligne*/
+void printElem(element elem);

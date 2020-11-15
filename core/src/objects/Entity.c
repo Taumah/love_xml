@@ -11,3 +11,7 @@ void freeEntity(entity enty){
     }
 
 }
+
+void printEnti(entity enti){
+    printf("|%s|%s|\n" , enti.name , enti.shortcut);
+}

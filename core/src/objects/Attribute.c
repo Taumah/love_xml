@@ -18,3 +18,7 @@ void freeAttribute(attribute attr){
         free(attr.defaultVal);
     }
 }
+
+void printAttr(attribute attr){
+    printf("|%s|%s|%s|%s|\n" , attr.elementName , attr.name , attr.type , attr.defaultVal);
+}

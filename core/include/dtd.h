@@ -56,6 +56,8 @@ off_t getFileSize(char* fileName);
 void readDTD(char* filename);
 
 
+void printDtd(void);
+
 
 /*  la chaîne de caractère envoyée est traitée puis 
     découpée en 3 parties pour renvoyer une structure 

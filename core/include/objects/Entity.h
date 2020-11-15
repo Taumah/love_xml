@@ -12,3 +12,9 @@ void addEntity(char *line);
 
 
 void freeEntity(entity);
+
+
+
+/*  affiche les différents champs de 
+    l'entité envoyée sur une ligne*/
+void printEnti(entity enti);

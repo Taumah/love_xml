@@ -47,3 +47,8 @@ void addAttributeWithGivenElementName(char *line , char* defaultElementName);
 
 
 void freeAttribute(attribute);
+
+
+/*  affiche les différents champs de 
+    l'attribut envoyé sur une ligne*/
+void printAttr(attribute attr);

@@ -16,6 +16,10 @@ int main(/*int argc, char* argv[]*/){
 
     readDTD(fileDTD);
     
+
+    printDtd();
+    
+    
     freeDtd();
     // menu();
 
