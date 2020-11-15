@@ -17,5 +17,10 @@ typedef struct s_element{
 
 }element;
 
+/*  ajoute un élement de type ELEMENT
+    à la strucutre DoctypeDef*/
+void addElement(char *line);
+
+
 
 void freeElement(element);

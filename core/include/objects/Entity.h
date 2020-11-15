@@ -6,4 +6,9 @@ typedef struct s_entity{
     char* shortcut; // resultat du mot clé 
 }entity;
 
+/*  ajoute un élement de type ENTITY
+    à la strucutre DoctypeDef*/
+void addEntity(char *line);
+
+
 void freeEntity(entity);

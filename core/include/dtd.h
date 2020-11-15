@@ -17,9 +17,11 @@
 #include "../include/objects/Entity.h"
 
 
-#define DTD_FIELDS_DEFAULT_LENGTH    40
+#define DTD_FIELDS_DEFAULT_LENGTH    10
 
 typedef struct s_doctypeDef{
+    char* rootElement;
+
     element* elements;
     short cursorElements;
     short sizeElements;
@@ -34,29 +36,15 @@ typedef struct s_doctypeDef{
 
 }doctypeDef;
 
+typedef enum e_doctypeDefFields{
+    FIELD_ELEMENTS,
+    FIELD_ATTRIBUTES,
+    FIELD_ENTITIES,
+}doctypeDefField; 
+
+
 void initDtd(void);
 void freeDtd(void);
-
-typedef enum e_attributeType{
-    CDATA,
-    MULTIPLE,
-    ID,
-    IDREF,
-    IDREFS,
-    NMTOKEN,
-    NMTOKENS,
-    ENTITY,
-    ENTITIES,
-    NOTATION,
-    XML,
-}attributeType;
-
-typedef enum e_attributeValue{
-    DEFAULT,
-    REQUIRED,
-    IMPLIED,
-    FIXED,
-}attributeValue;
 
 /*  getFileSize renvoie sous la forme d'un long int
     la taille nette du fichier.*/
@@ -82,27 +70,6 @@ void splitDtdLine(char* line);
     s'est produite, 0 sinon*/
 int fillDoctypeDef(char *buffer);
 
-/*  ajoute un élement de type ELEMENT
-    à la strucutre DoctypeDef*/
-void addElement(char *line);
-
-
-/*  ajoute un élement de type ATTLIST
-    à la strucutre DoctypeDef*/
-void addAttribute(char *line);
-
-/*  similaire à addAttribute, seulement est
-    utilisé lorsque l'element auquel est
-    rataché l'attribut contient plusieurs
-    attributs, et donc la déclaration se fait 
-    sur plusieurs lignes dans le fichiers,
-    tous possédant le même élement rataché*/
-void addAttributeWithGivenElementName(char *line , char* defaultElementName);
-
-
-/*  ajoute un élement de type ENTITY
-    à la strucutre DoctypeDef*/
-void addEntity(char *line);
 
 /*  reçoit une balise de la dtd
     et en renvoie le premier mot
@@ -117,7 +84,14 @@ char* getFirstWord(char *line);
 char* getEndOfBlock(char *block, int decay);
 
 
+/*  double la taille du champ (de la dtd) 
+    selectionné via le parametre field*/
+void doubleDtdField(doctypeDefField field);
 
 
+/*  renvoie la valeur par défaut d'un
+    ATTLIST , ou sa caractéristique le
+    cas échant*/
+char* getDefaultVal(char*);
 
 #endif

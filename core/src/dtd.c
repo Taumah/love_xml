@@ -30,9 +30,6 @@ void readDTD(char* fileName){
 
     fillDoctypeDef(buffer);
     free(buffer);
-
-
-    
 }
 
 void initDtd(){
@@ -64,11 +61,14 @@ void freeDtd(){
     {
         freeEntity(dtd.entities[i]);
     }
+
+    free(dtd.rootElement);
+
     free(dtd.elements);
     free(dtd.attributes);
     free(dtd.entities);
 }
-//TODO : create doubleDtdField someWhere ahah
+
 void splitDtdLine(char* line){
     switch ( *(line+1) )
     {
@@ -84,25 +84,21 @@ void splitDtdLine(char* line){
         addEntity(line);
         break;
     default:
-        printf("NULL\n");
+        printf("This is not a valid DTD block..\n");
         break;
     }
-
-    // printf("%d eheh \n", strncmp(left , "ELEMENT" , right - left) );
 
 }
 
 int fillDoctypeDef(char* buffer){
-    //TODO
-    //TODO IMPORTANT : add field rootElement(basically the main element) and create function that read this 1 elem
-    //TODO
-    char* defDebut = strchr(buffer , '[');
     
+    char* defDebut = strchr(buffer , '[');
     char* defFin = strrchr(buffer , ']');
     
     char* left = strchr(defDebut , '!');
-
     char* right=strchr(defDebut , '>');
+
+    dtd.rootElement = getFirstWord(buffer);
 
     char* block = malloc(500);
     checkMalloc(block);
@@ -138,14 +134,32 @@ void addElement(char *line){
 
     dtd.cursorElements += 1;
 
+    if (dtd.cursorElements == dtd.sizeElements)
+    {
+        doubleDtdField(FIELD_ELEMENTS);
+    }
+    
+
 }
 
 void addAttribute(char *line){
     
     dtd.attributes[dtd.cursorAttributes].elementName = getFirstWord(line);
 
-    printf("|%s|\n" , dtd.attributes[dtd.cursorAttributes].elementName);
+    
+    dtd.attributes[dtd.cursorAttributes].defaultVal = getDefaultVal(line);
+    
+    printf("|%s|%s|\n" , dtd.attributes[dtd.cursorAttributes].elementName , dtd.attributes[dtd.cursorAttributes].defaultVal);
+    
+    
+    
     dtd.cursorAttributes += 1;
+
+    
+    if (dtd.cursorAttributes == dtd.sizeAttributes)
+    {
+        doubleDtdField(FIELD_ATTRIBUTES);
+    }
 
 }
 
@@ -162,6 +176,12 @@ void addEntity(char *line){
     printf("|%s|%s|\n",dtd.entities[dtd.cursorEntities].name, dtd.entities[dtd.cursorEntities].shortcut);
     
     dtd.cursorEntities += 1;
+
+    
+    if (dtd.cursorEntities == dtd.sizeEntities)
+    {
+        doubleDtdField(FIELD_ENTITIES);
+    }
 }
 
 char* getFirstWord(char *block){
@@ -185,7 +205,7 @@ char* getEndOfBlock(char *block, int decay){
     
     char* blockEnd = strchr(blockDbt+1 , '>');
 
-    char* word = malloc(sizeof(char) * (blockEnd-blockDbt)  + 1);
+    char* word = malloc(sizeof(char) * (blockEnd-blockDbt)  + 1); // extra '\0' at the end 
     checkMalloc(word);
 
     strncpy(word , blockDbt+1 , blockEnd-blockDbt);
@@ -194,4 +214,86 @@ char* getEndOfBlock(char *block, int decay){
 
     return word;
 
+}
+
+void doubleDtdField(doctypeDefField field){
+    
+    switch (field)
+    {
+    case FIELD_ELEMENTS:
+        dtd.sizeElements *= 2;
+        dtd.elements = realloc(dtd.elements , sizeof(element) * dtd.sizeElements);
+        checkMalloc(dtd.elements);
+        break;
+
+    case FIELD_ATTRIBUTES:
+        dtd.sizeAttributes *= 2;
+
+        dtd.attributes = realloc(dtd.attributes , sizeof(attribute) * dtd.sizeAttributes);
+        checkMalloc(dtd.attributes);
+        break;
+    
+    case FIELD_ENTITIES:
+        dtd.sizeEntities *= 2;
+
+        dtd.entities = realloc(dtd.entities , sizeof(entity) * dtd.sizeEntities);
+        checkMalloc(dtd.entities);
+        break;
+    
+    default:
+        //WHUT ?
+        return;
+    }
+
+
+
+}
+
+void doubleDtdElements(void){
+    dtd.sizeElements *= 2;
+
+    element *newElements = malloc(sizeof(element) * dtd.sizeElements);
+
+    for (int i = 0; i < dtd.cursorElements; i+=1)
+    {
+        newElements[i].name = malloc(sizeof(char) * strlen(dtd.elements[i].name));
+
+        strcpy(newElements[i].name, dtd.elements[i].name);
+
+        newElements[i].content = malloc(sizeof(char) * strlen(dtd.elements[i].content));
+        strcpy(newElements[i].content ,  dtd.elements[i].content);
+
+        freeElement(dtd.elements[i]);
+    }
+    
+    free(dtd.elements);
+
+    dtd.elements = newElements;
+
+}
+
+
+char* getDefaultVal(char* line){
+    
+
+    char *wordDbt , *wordEnd;
+    
+    wordDbt = strchr(line , '#');
+    if(  wordDbt != NULL){
+        wordEnd = strrchr(line , '>');
+    }else
+    {
+        wordEnd = strrchr(line , '"'); 
+        wordDbt = strchr(line  , '"')+1; // exclude the " at the beginning
+    }
+
+    char *word = malloc(sizeof(char) * (wordEnd-wordDbt) +1);
+
+    strncpy(word , wordDbt , wordEnd-wordDbt);
+
+    *(word+ (wordEnd-wordDbt) ) = '\0'; 
+
+    return word;
+
+    
 }
