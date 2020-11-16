@@ -8,6 +8,7 @@
 #include "../include/xml.h"
 #include "../include/menu.h"
 
+
 // on récupère les variables globales des autres fichiers
 fileAsArray f_dtd , f_xml ;
 
@@ -24,12 +25,13 @@ int main(int argc, char* argv[]){
 
     //readDTD(fileDTD);
     
-    //readXML(fileXML);
+    printf("%s",readXML(fileXML));
 
     //splitDtd();
     //splitDtdLine(f_dtd.array[10]);
-
-    menu();
+    
+    
+    //menu();
 
     //existingFile(fileXML);
 
@@ -37,6 +39,12 @@ int main(int argc, char* argv[]){
 
     freeFileAsArray(f_dtd);
     freeFileAsArray(f_xml);
+
+    printf("%s",recoverValue(fileXML));
+    //recoverValue(fileXML);
+
+    printf("\n");
+
     return 0;
 
 }
