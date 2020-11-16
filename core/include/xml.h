@@ -21,4 +21,3 @@ int verifExtension(char* fileXML);
 /* récupere les balises */ 
 char *recoverValue(char* fileName);
 
-

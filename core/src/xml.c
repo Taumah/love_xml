@@ -85,7 +85,7 @@ char *recoverValue(char* fileName){
   Cette fonction prend char par char et regarder si il tombe pas sur <
   si il le trouve on ajoute la suite jusqu'a qu'il trouve > dans un tableau et on le print 
   */
-  
+
   char *buffer = readXML(fileName);
   
   //printf("je suis la 1\n|%s|\n" , buffer);
@@ -130,8 +130,7 @@ char *recoverValue(char* fileName){
   
     printf("%s\n", balise);
 
-    i = (baliseEnd - buffer);
-    
+    i = (baliseEnd - buffer); 
   }
   return NULL;
 }
