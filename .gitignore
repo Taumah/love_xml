@@ -1,2 +1,4 @@
-bin/*.exe
+bin/release.exe
 .vscode
+Makefile
+.git/index.lock

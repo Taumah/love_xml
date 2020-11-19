@@ -1,33 +1,21 @@
+#ifndef MAIN
+#define MAIN
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-#define FILE_AS_ARRAY_DEFAULT_LENGTH    40
-#define FILE_AS_ARRAY_LINE_LENGTH       200
-
-/*  représente un fichier avec chaque ligne du
-    fichier comme une chaîne de caractères , 
-    tous manipulables de la même manière */
-typedef struct fileAsArray{
-    char** array;
-    int length;
-}fileAsArray;
-
-/*  sert à libérer la mémoire de notre tableau de 
-    chaines de caractères pour les fichiers*/
-void freeFileAsArray(fileAsArray fas);
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 
+#include "../include/dtd.h"
+#include "../include/xml.h"
+#include "../include/menu.h"
 
-/*  prérempli les variables globales du programme */
-void initGlobals(void);
-
-
-/*  s'assure du succes de l'allocation dynamique, 
-    stop le programme sinon*/
-void checkMalloc(void* pointer);
+#define false 0
+#define true 1
 
 
-/*  s'assure du succes de l'ouverture du fichier, 
-    stop le programme sinon*/
-void checkfOpen(void* pointer);
+#endif

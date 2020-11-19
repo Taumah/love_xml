@@ -1,56 +1,62 @@
+#ifndef DTD_H
+#define DTD_H
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <time.h>
+
+#include "../include/main.h"
+#include "../include/utils.h"
+
+#include "../include/objects/Element.h"
+#include "../include/objects/Attribute.h"
+#include "../include/objects/Entity.h"
 
 
-typedef struct s_element{
-    //pour plus d'infos... => https://www.w3schools.com/xml/xml_dtd_elements.asp
-
-    char* name;  // nom de l'element
-
-
-    /*  peut être soit un mot clé (EMPTY , ANY....) ou un type 
-        de contenu sous forme de tableau : 
-            -(balise1,balise2,balise3... baliseN) 
-        chaque balise est suivi d'un caractère précisant son 
-        nombre d'occurence (si aucun , considérer que c'est 1 occurence forcée)     
-    */
-    char* content; 
-
-}element;
-
-typedef struct s_attribute{
-    //pour plus d'infos... => https://www.w3schools.com/xml/xml_dtd_attributes.asp
-
-    char* elementName;
-    char* name;
-    char* type;
-    char* value;
-
-}attribute;
-
-typedef struct s_entity{
-    char* name; // mot clé de l'entité
-    char* shortcut; // resultat du mot clé 
-}entity;
-
+#define DTD_FIELDS_DEFAULT_LENGTH    10
 
 typedef struct s_doctypeDef{
+    char* rootElement;
+
     element* elements;
+    short cursorElements;
+    short sizeElements;
+
     attribute* attributes;
+    short cursorAttributes;
+    short sizeAttributes;
+    
     entity* entities;
+    short cursorEntities;
+    short sizeEntities;
+
 }doctypeDef;
 
+typedef enum e_doctypeDefFields{
+    FIELD_ELEMENTS,
+    FIELD_ATTRIBUTES,
+    FIELD_ENTITIES,
+}doctypeDefField; 
 
 
-/*  readDTD reçoit une string en parametre
-    renvoi un tableau de chaines de caractères 
-    correspondant à chaque ligne de la DTD fournie*/
+void initDtd(void);
+void freeDtd(void);
+
+/*  getFileSize renvoie sous la forme d'un long int
+    la taille nette du fichier.*/
+off_t getFileSize(char* fileName);
+
+
+/*  readDTD reçoit une chaîne de caractères en
+    parametre et rempli la structure DoctypeDef*/
 void readDTD(char* filename);
 
-/*  parcours la structure fileAsArray dtd , 
-    et appelle splitDtdLine*/
-void splitDtd(void);
+
+void printDtd(void);
 
 
 /*  la chaîne de caractère envoyée est traitée puis 
@@ -58,7 +64,41 @@ void splitDtd(void);
     adéquate */
 void splitDtdLine(char* line);
 
-/*  double la taille du tableau de chaine de caractère
-    de la structure fileAsArray pour permettre de 
-    continuer la lecture du fichier */
-void doubleDtdSize();
+
+/*  reçoit le contenu du fichier sous 
+    la forme d'un tableau, puis rempli
+    les différents champs de la structure 
+    doctypeDef. Renvoie 1 si une erreur
+    s'est produite, 0 sinon*/
+int fillDoctypeDef(char *buffer);
+
+
+/*  reçoit une balise de la dtd
+    et en renvoie le premier mot
+    (l'attribut 'name' de l'objet)
+    */
+char* getFirstWord(char *line);
+
+
+/*  reçoit une balise de la dtd
+    et renvoie la derniere partie
+    de cette balise*/
+char* getEndOfBlock(char *block, int decay);
+
+
+/*  double la taille du champ (de la dtd) 
+    selectionné via le parametre field*/
+void doubleDtdField(doctypeDefField field);
+
+
+/*  renvoie la valeur par défaut d'un
+    ATTLIST , ou sa caractéristique le
+    cas échant*/
+char* getDefaultVal(char*);
+
+
+/*  */
+char *getTheNWord(char* block , int N);
+
+
+#endif
