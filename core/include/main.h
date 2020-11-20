@@ -10,12 +10,14 @@
 #include <unistd.h>
 
 
-#include "../include/dtd.h"
-#include "../include/xml.h"
-#include "../include/menu.h"
+#include "dtd.h"
+#include "xml_2.h"
+#include "menu.h"
 
 #define false 0
 #define true 1
+typedef GRegex GRegex;
+typedef GMatchInfo GMatchInfo;
 
 
 #endif

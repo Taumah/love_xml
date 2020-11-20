@@ -9,12 +9,12 @@
 #include <sys/stat.h>
 #include <time.h>
 
-#include "../include/main.h"
-#include "../include/utils.h"
+#include "main.h"
+#include "utils.h"
 
-#include "../include/objects/Element.h"
-#include "../include/objects/Attribute.h"
-#include "../include/objects/Entity.h"
+#include "objects/Element.h"
+#include "objects/Attribute.h"
+#include "objects/Entity.h"
 
 
 #define DTD_FIELDS_DEFAULT_LENGTH    10
@@ -48,7 +48,7 @@ void freeDtd(void);
 
 /*  getFileSize renvoie sous la forme d'un long int
     la taille nette du fichier.*/
-off_t getFileSize(char* fileName);
+int getFileSize(char* fileName , size_t *fileSize);
 
 
 /*  readDTD reçoit une chaîne de caractères en

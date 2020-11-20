@@ -3,15 +3,16 @@
 
 extern doctypeDef dtd;
 
-off_t getFileSize(char* fileName){
+int getFileSize(char* fileName , size_t *fileSize){
     struct stat stats ; 
 
     if( stat(fileName, &stats) != 0 ){
         printf("Erreur lecture info fichiers\n");
-        exit(EXIT_FAILURE);
+        return EXIT_FAILURE;
     } 
 
-    return stats.st_size;
+    *fileSize = stats.st_size;
+    return EXIT_SUCCESS;
 }
 
 
@@ -32,7 +33,12 @@ void printDtd(){
 
 void readDTD(char* fileName){
 
-    unsigned long long fileSize = getFileSize(fileName);
+    size_t fileSize;
+
+    if(getFileSize(fileName , &fileSize) == EXIT_FAILURE){
+        return;
+    }
+    
 
     char* buffer = malloc(sizeof(char) * fileSize+1);
     checkMalloc(buffer);
