@@ -22,3 +22,14 @@ void freeAttribute(attribute attr){
 void printAttr(attribute attr){
     printf("|%s|%s|%s|%s|\n" , attr.elementName , attr.name , attr.type , attr.defaultVal);
 }
+
+char* getDefaultValueWhenFixed(char* str){
+    char* wordDbt = strchr(str , '"');
+    char* wordEnd = strrchr(str , '"');
+
+    char* word = malloc(sizeof(char) * (wordEnd-wordDbt));
+
+    strncpy(word , wordDbt+1 , wordEnd-wordDbt-1);
+
+    return word;
+}

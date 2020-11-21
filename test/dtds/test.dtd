@@ -4,4 +4,10 @@
 <!ELEMENT from (#PCDATA)>
 <!ELEMENT heading (#PCDATA)>
 <!ELEMENT body (#PCDATA)>
+
+
+<!ATTLIST note NAME CDATA #FIXED "test">
+<!ATTLIST note CHAN CDATA #IMPLIED "Bien sur">
+<!ATTLIST from VTR CDATA #IMPLIED>
+<!ATTLIST body RATING CDATA #IMPLIED>
 ]> 

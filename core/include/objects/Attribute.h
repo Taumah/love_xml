@@ -1,5 +1,9 @@
+#ifndef ATTRIBUTE_H
+#define ATTRIBUTE_H
+
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 typedef struct s_attribute{
     //pour plus d'infos... => https://www.w3schools.com/xml/xml_dtd_attributes.asp
@@ -52,3 +56,12 @@ void freeAttribute(attribute);
 /*  affiche les différents champs de 
     l'attribut envoyé sur une ligne*/
 void printAttr(attribute attr);
+
+
+/*  renvoie la partie "FIXED value"
+    d'un attribute "FIXED"*/
+char* getDefaultValueWhenFixed(char* str);
+
+
+
+#endif
