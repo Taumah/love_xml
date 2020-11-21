@@ -27,7 +27,13 @@ int main(int argc, char* argv[]){
     int readXmlErrors = readXML(fileXML , &xmlBuffer);
 
     if(readXmlErrors != EXIT_FAILURE){
-        checkXML(xmlBuffer);
+        if(checkXML(xmlBuffer)){
+            printf("\nxml valide");
+        }else
+        {
+            printf("\nxml invalidé");
+        }
+        
     }
     
     free(xmlBuffer);

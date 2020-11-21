@@ -74,7 +74,7 @@ int isRootElementValid(char* buffer){
 	
 	errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , OPENING_ELEMENT);
 	
-	errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , CLOSING_ELEMENT);
+		errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , CLOSING_ELEMENT);
 
 
 	return errors;
@@ -122,16 +122,16 @@ int getTag(char* marker , char* buffer , char* highest , int isClosing  ){
 	char* found = strstr(buffer+gap , copy);
 
 	if(found == NULL || found > highest){
-		printf("\n [%s] not found" , copy);
+		// printf("\n [%s] not found" , copy);
 		return true;
 	}
 
 	char* endingMarker = strchr(found , '>');
 	if( endingMarker == NULL || endingMarker >= highest  ){
-		printf("\n [%s] not found" , copy);
+		// printf("\n [%s] not found" , copy);
 		return true;
 	}
-	printf("\n [%s] found" , copy);
+	// printf("\n [%s] found" , copy);
 	free(copy);
 
 	if(isClosing == OPENING_ELEMENT && checkAttributes(marker , found , endingMarker) != true){
@@ -198,18 +198,36 @@ int checkAttributes(char *marker , char *startBloc , char* endBloc){
 				break;
 		}
 
-		printf("|%s|test \n" ,defaultAttrValue);
 
 		sprintf(strRegex , "%s(%s=\"%s\")%s *" , strRegexCopy ,dtd.attributes[i].name , defaultAttrValue ,attributeQuantifier );
 	}
 
 	strcat(strRegex , ">");
 	
-	printf("\nregex [%s]" , strRegex);
+
+	GRegex *regex;
+	GMatchInfo *match_info;
+
+	regex = g_regex_new(strRegex, 0, 0, NULL);
+
+	g_regex_match (regex, theElementWeWantToAnalyse, 0, &match_info);
+
+
+	int returned = false;
+	if(g_match_info_matches (match_info))
+	{
+
+		returned = true;
+	}
+	g_match_info_free (match_info);
+	g_regex_unref (regex);
+
+
+	printf("regex |%s| ; \nstring|%s|" , strRegex , theElementWeWantToAnalyse);
 
 	free(theElementWeWantToAnalyse);
 	free(attributeQuantifier);
 	free(defaultAttrValue);
-	return true;
 
+	return returned;
 }
