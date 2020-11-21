@@ -61,14 +61,23 @@ int checkXML(char* buffer){
 		return true;
 	}
 	
-	return !isRootElementValid(buffer);
+	if(!isRootElementValid(buffer)){
+		return true;
+	}
+
+	return false;
 }
 
 int isRootElementValid(char* buffer){
 
+	int errors = true;
 	
+	errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , OPENING_ELEMENT);
+	
+	errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , CLOSING_ELEMENT);
 
-	return true;
+
+	return errors;
 }
 
 int getFirstBlock(char *buffer){
@@ -86,8 +95,8 @@ int getFirstBlock(char *buffer){
 	{
 		char *word = g_match_info_fetch (match_info, 0);
 
-		gap += strlen(word);
-		printf("\n\n%s , %d" , word , (int)strlen(word));
+		gap += strlen(word)-1;
+		// printf("\n\n%s , %d" , word , (int)strlen(word));
 		g_free (word);
 		g_match_info_next (match_info, NULL);
 		return false;
@@ -99,30 +108,108 @@ int getFirstBlock(char *buffer){
 }
 
 
-int getClosingTag(char* marker , char* buffer , char* highest  ){
 
-	char* copy = malloc(sizeof(char) * strlen(marker)+3);
+
+int getTag(char* marker , char* buffer , char* highest , int isClosing  ){
+
+	char* copy = malloc(sizeof(char) * strlen(marker)+2 + isClosing);
 	checkMalloc(copy);
 
+	*(copy+isClosing) 	= '/';
 	*(copy)		= '<';
-	*(copy+1) 	= '/';
-	strcpy( copy+2 , marker); 
+	strcpy( copy + 1 + isClosing , marker); 
 	
 	char* found = strstr(buffer+gap , copy);
 
-	free(copy);
 	if(found == NULL || found > highest){
-		printf("\nunfortunately;...");
+		printf("\n [%s] not found" , copy);
 		return true;
 	}
 
-	char* endingMaker = strchr(found , '>');
-	if( endingMaker == NULL || endingMaker >= highest  ){
-		printf("\nunfortunately 2 !!...");
+	char* endingMarker = strchr(found , '>');
+	if( endingMarker == NULL || endingMarker >= highest  ){
+		printf("\n [%s] not found" , copy);
 		return true;
 	}
-	printf("\nwazaaaaaaaaaaa;...");
+	printf("\n [%s] found" , copy);
+	free(copy);
 
+	if(isClosing == OPENING_ELEMENT && checkAttributes(marker , found , endingMarker) != true){
+		
+		return true;
+	}
 	return false;
+}
+
+int checkAttributes(char *marker , char *startBloc , char* endBloc){
+
+	char strRegex[1000] = "";
+	char *strRegexCopy = strRegex;
+
+	sprintf(strRegex , "<%s +", marker );
+
+	char* theElementWeWantToAnalyse = malloc(sizeof(char) * (endBloc-startBloc)+1);
+	checkMalloc(theElementWeWantToAnalyse);
+
+	char flags = 0;
+
+	strncpy(theElementWeWantToAnalyse , startBloc , endBloc-startBloc +1);
+
+	char* attributeQuantifier = malloc(sizeof(char) * 4) ;
+	char* defaultAttrValue = malloc(sizeof(char) * 25);
+	for (int i = 0; i < dtd.cursorAttributes; i+=1)
+	{
+
+		if(strcmp(dtd.attributes[i].elementName , marker) != 0){
+			continue;	
+		}
+		flags = 0;
+			
+		//TODO read the attribute selected and adapt pre-built regex <3333
+		
+		flags += strncmp(dtd.attributes[i].defaultVal , "#IMPLIED " , 8) == 0;
+		flags <<= 1;
+
+		flags += strncmp(dtd.attributes[i].defaultVal, "#REQUIRED " , 10) == 0;
+		flags <<= 1;
+	
+		flags += strncmp(dtd.attributes[i].defaultVal, "#FIXED " , 7) == 0;
+
+		switch (flags){
+			case 4: // IMPLIED
+				strcpy(attributeQuantifier , "?");
+				strcpy(defaultAttrValue,  "[[:print:]]+");
+				break;
+			case 2: //REQUIRED
+				strcpy(attributeQuantifier , "{1}");
+				strcpy(defaultAttrValue,  "[[:print:]]+");
+				break;
+			case 1: // FIXED
+				strcpy(attributeQuantifier , "{1}");
+				free(defaultAttrValue);
+				defaultAttrValue = getDefaultValueWhenFixed(dtd.attributes[i].defaultVal);
+				break;
+			case 0: //NONE
+				//TODO check if it is an enum. if so, create new variable to match the check
+				break;
+			
+			default: // WHAT?
+				fprintf(stderr , "\nWHAT? , please try again...\n");
+				break;
+		}
+
+		printf("|%s|test \n" ,defaultAttrValue);
+
+		sprintf(strRegex , "%s(%s=\"%s\")%s *" , strRegexCopy ,dtd.attributes[i].name , defaultAttrValue ,attributeQuantifier );
+	}
+
+	strcat(strRegex , ">");
+	
+	printf("\nregex [%s]" , strRegex);
+
+	free(theElementWeWantToAnalyse);
+	free(attributeQuantifier);
+	free(defaultAttrValue);
+	return true;
 
 }

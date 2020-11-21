@@ -1,33 +1,37 @@
 #include "../include/main.h"
 
+//<to>[[:ascii:]]*<\/to>[\n\ \r]*<from>[[:ascii:]]*<\/from>
+// regex example to check following elements
 
 doctypeDef dtd; 
+
+extern size_t gap;
+
 int main(int argc, char* argv[]){
+    
     (void)argc ; (void)argv;
     initDtd();
 
-    // char* fileDTD = "test/dtds/test1.dtd";
+    char* fileDTD = "test/dtds/test.dtd";
     char* fileXML = "test/XML/test.xml";
 
 
-    // readDTD(fileDTD);
+    readDTD(fileDTD);
     
 
     // printDtd();
     
     
-    // freeDtd();
-    // menu();
 
+    char* xmlBuffer = NULL;
+    int readXmlErrors = readXML(fileXML , &xmlBuffer);
+
+    if(readXmlErrors != EXIT_FAILURE){
+        checkXML(xmlBuffer);
+    }
     
-    printf("%s",readXML(fileXML));
-
-    //existingFile(fileXML);
-    printf("\n");
-
-    printf("%s",recoverValue(fileXML));
-    
-    printf("\n");
+    free(xmlBuffer);
+    freeDtd();
 
     return 0;
 

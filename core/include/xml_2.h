@@ -7,6 +7,10 @@
 
 #include "dtd.h"
 #include "main.h"
+#include "objects/Attribute.h"
+
+#define OPENING_ELEMENT 0
+#define CLOSING_ELEMENT 1
 
 /*  readXML reçoit une string en parametre
     et rempli un buffer de la taille du 
@@ -42,4 +46,13 @@ int isRootElementValid(char* buffer);
 int getFirstBlock(char *buffer);
 
 
-int getClosingTag(char* marker , char* buffer , char* highest  );
+/*  renvoie false si l'élement demandé 
+    est trouvé AVANT la position highest
+    true sinon. incrémente gap*/
+int getTag(char* marker , char* buffer , char* highest , int isClosing );
+
+
+/*  renvoie true si la balise pointée
+    par `found` valide toutes les règles
+    d'attributs*/ 
+int checkAttributes(char *marker , char *startBloc , char* endBloc);
