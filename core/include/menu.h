@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "xml.h"
+#include "dtd.h"
 
 /* affiche le menu */
 void menu();

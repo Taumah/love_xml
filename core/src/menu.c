@@ -1,7 +1,7 @@
 #include "../include/menu.h"
 
 char nameXml[20][20], nameDtd[20][20];
-char filePathXml[80], filePathDtd[80];
+char filePathXml[20][150], filePathDtd[20][150];
 char clear[20];
 
 int increment;
@@ -67,14 +67,14 @@ void insertFile(){
   //Partie PathXml
   do{
     printf("Donnes moi le chemin complet de ton fichier XML: ");
-    fgets(filePathXml,sizeof(filePathXml),stdin);
+    fgets(filePathXml[increment],sizeof(filePathXml[increment]),stdin);
   }
-  while(!existingFile(filePathXml));
+  while(! (existingFile(filePathXml[increment]) && isExtensionValid(filePathXml[increment] , "xml") )  );
 
 
   //Partie NomXML
   printf("Donnes moi un nom pour ton fichier XML: ");
-  fgets(nameXml[increment],sizeof(nameXml),stdin);
+  fgets(nameXml[increment],sizeof(nameXml[increment]),stdin);
  
   /* 
   Partie DTD 
@@ -83,14 +83,14 @@ void insertFile(){
   //Partie PathDTD
   do{
      printf("Donne moi le chemin complet de ta DTD: ");
-    fgets(filePathDtd,sizeof(filePathDtd),stdin);
+    fgets(filePathDtd[increment],sizeof(filePathDtd[increment]),stdin);
   }
-  while(!existingFile(filePathDtd));
+  while(! (existingFile(filePathDtd[increment]) && isExtensionValid(filePathDtd[increment] , "dtd") )  );
 
 
   //Partie NomDTD
   printf("Donnes moi un nom pour ta DTD: ");
-  fgets(nameDtd[increment],sizeof(nameDtd),stdin);
+  fgets(nameDtd[increment],sizeof(nameDtd[increment]),stdin);
   
 
   increment++; // on l'increment car on as un nouvelle enregistrement
@@ -107,16 +107,55 @@ void insertFile(){
 void afficheEnregistrement(){
   printf("Voici les enregistrement: \n");
   int valide = 1;
+
+  char numberToExecute[1000];
+  int intToExecute;
+
   for(int i=0;i<increment;i++){ // Parcours les enregistrements si aucun enregistrement alors on vérifie le if 
     if(strlen(nameXml[i])>0 && strlen(nameDtd[i])>0){ // si la taille du tableau>0 alors il existe un enregistrement
       valide=0; //valide = 0 car on est rentré dans le if et pas besoin d'afficher aucun enregistrement
       nameXml[i][strlen(nameXml[i]) -1] = '\0'; // Permets de prendre le dernier caractère et le remplacer par un \0  
-      printf("%s-%s",nameXml[i],nameDtd[i]); // Affichage des enregistrements sur la même ligne grace au remplacement du \0
+      printf("%d) %s-%s",i+1,nameXml[i],nameDtd[i]); // Affichage des enregistrements sur la même ligne grace au remplacement du \0
     }
   }
+  
   if(valide==1){ // si aucun enregistrement on affiche : 
-    printf("Aucun enregistrement veuillez en faire un "); 
+    printf("Aucun enregistrement veuillez en faire un \n"); 
+    return;
   }
+
+  fgets(numberToExecute , sizeof(numberToExecute),stdin );
+  
+  do{
+    valide= 0;
+    printf("Quel enregistrement voulez-vous lancer? R pour retour\n");
+    fgets(numberToExecute , sizeof(numberToExecute),stdin );
+
+
+    if( *numberToExecute == 'R' ){
+      return;
+    }
+
+    intToExecute = atoi(numberToExecute);
+
+    if(intToExecute > increment || intToExecute <= 0){
+      printf("Nombre invalide\n");
+    }else
+    {
+      valide = 1;
+    }
+    
+  }while( !valide);
+//TODO call readDtd and readXML
+
+  initDtd();
+
+  readDTD(filePathDtd[intToExecute-1]); // -1 because we added +1 at display
+
+  printDtd();
+
+  freeDtd();
+
   printf("\n");
 }
 

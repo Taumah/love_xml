@@ -1,135 +1,246 @@
-// #include "../include/xml.h"
-// #include "../include/main.h"
+#include "../include/xml.h"
 
+extern doctypeDef dtd;
 
-// char *readXML(char* fileName){
-//   char *fileXml = NULL;
-//   int str_size , read_size = 0;
-  
-//   if(verifExtension(fileName) == 1){
-//     return;
-//   }
-  
-//   FILE* XML = fopen(fileName , "rw");
+size_t gap = 0;
 
-//   if( XML == NULL){
-//     printf("erreur à l'ouverture");
-//     exit(1);
-//   }
+int readXML(char* fileName , char** buffer){
+	*buffer = NULL;
+	size_t fileSize = 0;
 
-//   if (XML) {
-//     // permet de se mettre a la fin du fichier
-//     fseek(XML,0,SEEK_END);
-  
-//     // calculer la taille du fichier 
-//     str_size = ftell(XML);
+	if( !isExtensionValid(fileName , "xml") ){
+		return EXIT_FAILURE ;
+	}
 
-//     //retourner au debut du fichier
-//     //rewind(XML);
-//     fseek(XML,0,SEEK_SET);
-
-//     // creation d'un char dynamique de longeur du fichier+1
-//     fileXml = malloc(sizeof(char) * (str_size+1));
-
-//     // permet de lire tout le fichier en une seule fois
-//     read_size = fread(fileXml, sizeof(char), str_size, XML);
-
-//     // printf("taille du fichier : %d\n" , str_size );
-//     // printf("taille du fichier 2: %d\n" , read_size );
-
-//     //permet de transfromer fileXml en vrai chaine de caractre 
-//     fileXml[str_size] = '\0';
-
-    
-//     if (str_size != read_size)
-//     {
-//       /*
-//         S'il y a eu une erreur alors on supprime tout.
-//       */
-//       free(fileXml);
-//       fileXml = NULL;
-//     }
-
-//     // A la fin on ferme le fichier pour eviter un probleme par la suite
-//     fclose(XML);
-//   }
-
-//   // On retourne notre fileXml pour pouvoir l'utiliser par la suite 
-
-//   return fileXml;
-// }
-
-// const char *getFilenameExt(const char *filename) {
-//     const char *dot = strrchr(filename, '.');
-//     if(!dot || dot == filename) return "";
-//     return dot + 1;
-// }
-
-// int verifExtension(char* fileXML){
-
-//     if(   strcmp("xml" , getFilenameExt(fileXML) )  != 0  ){
-//         printf("ceci n'est pas un fichier XML\n");
-//         return false;
-//     }else
-//     {
-//         printf("extension valide \n");
-//         return true;
-//     }
-// }
+	if( getFileSize(fileName , &fileSize) == EXIT_FAILURE){
+		return EXIT_FAILURE;
+	}
 
 
 
-// char *recoverValue(char* fileName){
-//   /*
-//   Cette fonction prend char par char et regarder si il tombe pas sur <
-//   si il le trouve on ajoute la suite jusqu'a qu'il trouve > dans un tableau et on le print 
-//   */
+	FILE* fXML = fopen(fileName , "rw");
 
-//   char *buffer = readXML(fileName);
-  
-//   //printf("je suis la 1\n|%s|\n" , buffer);
+	if( fXML == NULL){
+		printf("erreur à l'ouverture");
+		return EXIT_FAILURE;
+	}
 
-//   int i=0;
-//   char *balise=NULL;
-//   char *baliseDbt = NULL, *baliseEnd = NULL;
-//   int strlen;
-//   char *tab[256];
-  
-//   //printf("je suis la 2\n|%s|\n" , buffer); 
-   
-//   if( buffer == NULL){
-//     return NULL;
-//   }
-//   //printf("je suis la 3\n|%s|\n" , buffer);
-//   //printf("1");
-  
-//   baliseDbt = strchr( buffer , '<');
-//   baliseEnd = baliseDbt;
-//   while(buffer[i] !='\0'){
-    
+	*buffer = malloc(sizeof(char) * fileSize);
+	checkMalloc(*buffer);
 
-//     baliseDbt = strchr( baliseEnd , '<');
+	if (fread(*buffer, sizeof(char), fileSize, fXML) != fileSize)
+	{
+		return EXIT_FAILURE;
+	}
 
-//     if(baliseDbt == NULL){
-//       break;
-//     }
-//     baliseEnd = strchr(baliseDbt , '>');
-    
-//     if(baliseEnd == NULL){
-//       break;
-//     }
-//     strlen = baliseEnd - baliseDbt;
-    
-//     balise = malloc( sizeof(char) *  strlen ); // baliseEnd - baliseDbt calcule nombre de char entre les deux
-    
-//     strncpy(balise , baliseDbt+1 , strlen-1); 
-//     // copy dans balise 
-    
-//     *(balise + strlen-1) = '\0';
-  
-//     printf("%s\n", balise);
+	fclose(fXML);
+  return EXIT_SUCCESS;
+}
 
-//     i = (baliseEnd - buffer); 
-//   }
-//   return NULL;
-// }
+const char *getFilenameExt(const char *filename) {
+	const char *dot = strrchr(filename, '.');
+	if(!dot || dot == filename) return "";
+	return dot + 1;
+}
+
+int isExtensionValid(char* fileName , char* extension){
+
+	if( strcmp( extension , getFilenameExt(fileName) )  != 0  ){
+		printf("ceci n'est pas un fichier %s\n" , extension);
+		return false;
+	}else
+	{
+		printf("extension valide \n");
+		return true;
+	}
+}
+
+int checkXML(char* buffer){
+	
+	if( getFirstBlock(buffer)){
+		return true;
+	}
+	
+	if(!isRootElementValid(buffer)){
+		return true;
+	}
+
+	return false;
+}
+
+int isRootElementValid(char* buffer){
+
+	int errors = true;
+	
+	errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , OPENING_ELEMENT);
+	
+	errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , CLOSING_ELEMENT);
+
+
+	return errors;
+}
+
+int getFirstBlock(char *buffer){
+	
+	GRegex *regex;
+	GMatchInfo *match_info;
+
+	char *strRegex = "<\?[[:ascii:]]*\?>";
+
+	regex = g_regex_new(strRegex, 0, 0, NULL);
+
+	g_regex_match (regex, buffer, 0, &match_info);
+
+	if(g_match_info_matches (match_info))
+	{
+		char *word = g_match_info_fetch (match_info, 0);
+
+		gap += strlen(word)-1;
+		// printf("\n\n%s , %d" , word , (int)strlen(word));
+		g_free (word);
+		
+		g_match_info_free (match_info);
+		g_regex_unref (regex);
+
+		return false;
+
+	}
+	g_match_info_free (match_info);
+	g_regex_unref (regex);
+
+	return true;
+}
+
+
+
+
+int getTag(char* marker , char* buffer , char* highest , int isClosing  ){
+
+	char* copy = malloc(sizeof(char) * strlen(marker)+2 + isClosing);
+	checkMalloc(copy);
+
+	*(copy+isClosing) 	= '/';
+	*(copy)		= '<';
+	strcpy( copy + 1 + isClosing , marker); 
+	
+	char* found = strstr(buffer+gap , copy);
+
+	if(found == NULL || found > highest){
+		// printf("\n [%s] not found" , copy);
+		return true;
+	}
+
+	char* endingMarker = strchr(found , '>');
+	if( endingMarker == NULL || endingMarker >= highest  ){
+		// printf("\n [%s] not found" , copy);
+		return true;
+	}
+	// printf("\n [%s] found" , copy);
+	free(copy);
+
+	if(isClosing == OPENING_ELEMENT && checkAttributes(marker , found , endingMarker) != true){
+		
+		return true;
+	}
+	return false;
+}
+
+int checkAttributes(char *marker , char *startBloc , char* endBloc){
+
+	char strRegex[1000] = "";
+	char *strRegexCopy = strRegex;
+
+	sprintf(strRegex , "<%s +", marker );
+
+	char* theElementWeWantToAnalyse = malloc(sizeof(char) * (endBloc-startBloc)+1);
+	checkMalloc(theElementWeWantToAnalyse);
+
+	char flags = 0;
+
+	strncpy(theElementWeWantToAnalyse , startBloc , endBloc-startBloc +1);
+
+	char* attributeQuantifier = malloc(sizeof(char) * 4) ;
+	char* defaultAttrValue = malloc(sizeof(char) * 25);
+	for (int i = 0; i < dtd.cursorAttributes; i+=1)
+	{
+
+		if(strcmp(dtd.attributes[i].elementName , marker) != 0){
+			continue;	
+		}
+		flags = 0;
+			
+		//TODO read the attribute selected and adapt pre-built regex <3333
+		
+		flags += strncmp(dtd.attributes[i].defaultVal , "#IMPLIED " , 8) == 0;
+		flags <<= 1;
+
+		flags += strncmp(dtd.attributes[i].defaultVal, "#REQUIRED " , 10) == 0;
+		flags <<= 1;
+	
+		flags += strncmp(dtd.attributes[i].defaultVal, "#FIXED " , 7) == 0;
+
+		switch (flags){
+			case 4: // IMPLIED
+				strcpy(attributeQuantifier , "?");
+				strcpy(defaultAttrValue,  "[[:print:]]+");
+				break;
+			case 2: //REQUIRED
+				strcpy(attributeQuantifier , "{1}");
+				strcpy(defaultAttrValue,  "[[:print:]]+");
+				break;
+			case 1: // FIXED
+				strcpy(attributeQuantifier , "{1}");
+				free(defaultAttrValue);
+				defaultAttrValue = getDefaultValueWhenFixed(dtd.attributes[i].defaultVal);
+				break;
+			case 0: //NONE
+				//TODO check if it is an enum. if so, create new variable to match the check
+				break;
+			
+			default: // WHAT?
+				fprintf(stderr , "\nWHAT? , please try again...\n");
+				break;
+		}
+
+
+		sprintf(strRegex , "%s(%s=\"%s\")%s *" , strRegexCopy ,dtd.attributes[i].name , defaultAttrValue ,attributeQuantifier );
+	}
+
+	strcat(strRegex , ">");
+	
+	int returned = checkRegex(strRegex , theElementWeWantToAnalyse);
+	
+
+	printf("regex |%s| ; \nstring|%s|" , strRegex , theElementWeWantToAnalyse);
+
+	free(theElementWeWantToAnalyse);
+	free(attributeQuantifier);
+	free(defaultAttrValue);
+
+	return returned;
+}
+
+
+
+int checkRegex(char* strRegex , char* haystack){
+	GRegex *regex;
+	GMatchInfo *match_info;
+
+	regex = g_regex_new(strRegex, 0, 0, NULL);
+
+	g_regex_match (regex, haystack, 0, &match_info);
+
+
+	int returned = false;
+	if(g_match_info_matches (match_info))
+	{
+
+		returned = true;
+	}
+	g_match_info_free (match_info);
+	g_regex_unref (regex);
+
+
+	return returned;
+
+}
