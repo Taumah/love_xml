@@ -8,15 +8,13 @@ int readXML(char* fileName , char** buffer){
 	*buffer = NULL;
 	size_t fileSize = 0;
 
-	if( !isExtensionValid(fileName , "xml") ){
+	if( !isExtensionValid(fileName , "xml") ){ // check l'extension du fichier si elle n'est pas bonne renvoie une erreur 
 		return EXIT_FAILURE ;
 	}
 
-	if( getFileSize(fileName , &fileSize) == EXIT_FAILURE){
+	if( getFileSize(fileName , &fileSize) == EXIT_FAILURE){ // check la taille du fichier et du nom. Renvoie une erreur si probleme
 		return EXIT_FAILURE;
 	}
-
-
 
 	FILE* fXML = fopen(fileName , "rw");
 
@@ -43,9 +41,9 @@ const char *getFilenameExt(const char *filename) {
 	return dot + 1;
 }
 
-int isExtensionValid(char* fileName , char* extension){
+int isExtensionValid(char* fileName , char* extension){ 
 
-	if( strcmp( extension , getFilenameExt(fileName) )  != 0  ){
+	if( strcmp( extension , getFilenameExt(fileName) )  != 0  ){ // compare l'extension passée en paramètres et l'Extension du fichier 
 		printf("ceci n'est pas un fichier %s\n" , extension);
 		return false;
 	}else
@@ -57,18 +55,18 @@ int isExtensionValid(char* fileName , char* extension){
 
 int checkXML(char* buffer){
 	
-	if( getFirstBlock(buffer)){
+	if( getFirstBlock(buffer)){ //apelle de fonction permettant d'augmenter la valeur de gap 
 		return true;
 	}
 	
-	if(!isRootElementValid(buffer)){
+	if(!isRootElementValid(buffer)){ // appelle de la fonction qui vérifie la 1 er balise des fochiers XML et DTD 
 		return true;
 	}
 
-	return false;
+	return false; // renvoie false si y'a une erreur. 
 }
 
-int isRootElementValid(char* buffer){
+int isRootElementValid(char* buffer){  // J'ai rien compris
 
 	int errors = true;
 	
@@ -85,24 +83,26 @@ int getFirstBlock(char *buffer){
 	GRegex *regex;
 	GMatchInfo *match_info;
 
-	char *strRegex = "<\?[[:ascii:]]*\?>";
+	char *strRegex = "<\?[[:ascii:]]*\?>"; // création d'un pattern qui prend tous les ASCII 
 
-	regex = g_regex_new(strRegex, 0, 0, NULL);
+	regex = g_regex_new(strRegex, 0, 0, NULL); // cette fonction permet de créer une expresiion régulieres en utilisant un pattern 
 
-	g_regex_match (regex, buffer, 0, &match_info);
+	g_regex_match (regex, buffer, 0, &match_info); 
+	// Cherche une correspondance dans la chaine entre les 2 premiers paramétres. 
+	// Les informations sont stockés dans match info 
 
-	if(g_match_info_matches (match_info))
+	if(g_match_info_matches (match_info)) // Renvoie oui si l'opération de correspondance précédente a réussi.
 	{
-		char *word = g_match_info_fetch (match_info, 0);
+		char *word = g_match_info_fetch (match_info, 0); // recupere le texte de match_info et le stocker dans word 
 
 		gap += strlen(word)-1;
 		// printf("\n\n%s , %d" , word , (int)strlen(word));
-		g_free (word);
-		g_match_info_next (match_info, NULL);
+		g_free (word); // permets de libérer le regex 
+		g_match_info_next (match_info, NULL); // Va rechercher la correspondance suivante de match info 
 		return false;
 	}
-	g_match_info_free (match_info);
-	g_regex_unref (regex);
+	g_match_info_free (match_info); // Si match_info n'est pas NULL, appelle g_match_info_unref ()
+	g_regex_unref (regex); 
 
 	return true;
 }
