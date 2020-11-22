@@ -65,6 +65,8 @@ int checkXML(char* buffer){
 		return true;
 	}
 
+
+
 	return false;
 }
 
@@ -76,6 +78,7 @@ int isRootElementValid(char* buffer){
 	
 	errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , CLOSING_ELEMENT);
 
+	errors &= generateRegexForElement(dtd.rootElement , buffer , buffer+strlen(buffer));
 
 	return errors;
 }
@@ -110,8 +113,6 @@ int getFirstBlock(char *buffer){
 
 	return true;
 }
-
-
 
 
 int getTag(char* marker , char* buffer , char* highest , int isClosing  ){
@@ -211,7 +212,7 @@ int checkAttributes(char *marker , char *startBloc , char* endBloc){
 	int returned = checkRegex(strRegex , theElementWeWantToAnalyse);
 	
 
-	printf("regex |%s| ; \nstring|%s|" , strRegex , theElementWeWantToAnalyse);
+	printf("regex |%s| \nstring|%s|" , strRegex , theElementWeWantToAnalyse);
 
 	free(theElementWeWantToAnalyse);
 	free(attributeQuantifier);
@@ -219,7 +220,6 @@ int checkAttributes(char *marker , char *startBloc , char* endBloc){
 
 	return returned;
 }
-
 
 
 int checkRegex(char* strRegex , char* haystack){
@@ -244,3 +244,80 @@ int checkRegex(char* strRegex , char* haystack){
 	return returned;
 
 }
+
+
+int generateRegexForElement(char* elementName , char* buffer , char*  endBuffer){
+	
+	int elementIndex = -1;
+
+	for (int i = 0; i < dtd.cursorElements; i+=1)
+	{
+		if (strcmp(dtd.elements[i].name , elementName) == 0){
+			elementIndex = i;
+			break;
+		}
+		
+	}
+
+
+	if(elementIndex == -1){
+		return false;
+	}
+
+	printf("\n[%s]\n" , dtd.elements[elementIndex].content);
+
+	int isValid = 0;
+	if(strcmp(dtd.elements[elementIndex].content , "EMPTY") == 0){
+		isValid = regexEmpty(dtd.elements[elementIndex].name , buffer);
+		// printf("\n!!!!!!!!EMPTY and %dand [%s]" ,isValid , buffer );
+	}
+	else if( strcmp(dtd.elements[elementIndex].content , "(#PCDATA)" ) == 0){
+		regexPCDATA(dtd.elements[elementIndex].name , buffer);
+		printf("\n!!!!!!!!PCDATA ");
+	}
+	else if( strcmp(dtd.elements[elementIndex].content , "ANY") == 0){
+		regexANY(dtd.elements[elementIndex].name , buffer);
+		printf("\n!!!!!!!!ANY ");
+	}else{
+		//function qui check les children
+		printf("\n!!!!!!!!CHILDREN ");
+	}
+
+	if(isValid){
+		printf("element correct");
+	}
+	return isValid;
+}
+
+
+
+int regexEmpty(char* elementName , char* buffer){
+
+	char strRegex[1000];
+
+	sprintf(strRegex , "<%s[[:print:]]*/>" , elementName);
+
+	return checkRegex(strRegex , buffer);
+}
+
+int regexPCDATA(char* elementName , char* buffer){
+	char strRegex[1000];
+
+	sprintf(strRegex , "<%s [[:print:] ]*>[^<>]*</%s *>" , elementName , elementName);
+
+	printf("my regex : [%s]" , strRegex);
+	return checkRegex(strRegex , buffer);
+}
+
+int regexANY(char* elementName , char* buffer){
+	char strRegex[1000];
+
+	sprintf(strRegex , "(<%s [[:print:] ]*>[[:alpha:]]*</%s *>|<%s[[:print:]]*/>)" , elementName , elementName, elementName);
+
+	printf("my regex : [%s]" , strRegex);
+	return checkRegex(strRegex , buffer);
+}
+
+
+
+

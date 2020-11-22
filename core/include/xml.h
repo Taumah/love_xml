@@ -63,3 +63,18 @@ int checkAttributes(char *marker , char *startBloc , char* endBloc);
     false selon si la regex match avec
     la string ou non*/
 int checkRegex(char* strRegex , char* haystack);
+
+
+/*  créé une regex a partir de la dtd, l'éxecute    
+    et renvoie 1 pour un succès, 0 sinon*/
+int generateRegexForElement(char* elementName , char* buffer , char*  endBuffer);
+
+
+/*  créé une regex adapté à un element EMPTY*/
+int regexEmpty(char* elementName , char* buffer);
+
+/*  créé une regex adapté à un element PCDATA*/
+int regexPCDATA(char* elementName , char* buffer);
+
+/*  créé une regex adapté à un element AN*/
+int regexANY(char* elementName , char* buffer);

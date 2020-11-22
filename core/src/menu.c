@@ -144,18 +144,42 @@ void afficheEnregistrement(){
     {
       valide = 1;
     }
+
     
   }while( !valide);
-//TODO call readDtd and readXML
 
-  initDtd();
+  verify(intToExecute);
 
-  readDTD(filePathDtd[intToExecute-1]); // -1 because we added +1 at display
+}
 
-  printDtd();
+int verify(int intToExecute  ){
+	int returned = true;
+	initDtd();
 
-  freeDtd();
+	readDTD(filePathDtd[intToExecute-1]); // -1 because we added +1 at display
 
-  printf("\n");
+	printDtd();
+
+	char* xmlBuffer = NULL;
+	int readXmlErrors = readXML(filePathXml[intToExecute-1] , &xmlBuffer);
+
+	if(readXmlErrors != EXIT_FAILURE){
+		if(checkXML(xmlBuffer)){
+			printf("\nxml valide");
+			returned = true;
+		}else
+		{
+			printf("\nxml invalidé");
+			returned = false;
+		}
+		
+	}
+
+	free(xmlBuffer);
+	freeDtd();
+
+	printf("\n");
+
+	return returned;
 }
 

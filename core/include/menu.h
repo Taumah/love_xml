@@ -22,3 +22,9 @@ void afficheEnregistrement();
 Cette fonction retourne si un fichier existe ou non. Si le chemin n'est pas bien rentré il vous demandera de retaper le chemin.
 */
 int existingFile(char *filePath);
+
+
+/*  appelle les fonctions checkXML
+    et readDtd, en effectuant les tests
+    de retour correspondants*/
+int verify(int intToExecute  );

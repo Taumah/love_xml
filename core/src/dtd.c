@@ -106,7 +106,7 @@ void splitDtdLine(char* line){
         addEntity(line);
         break;
     default:
-        printf("This is not a valid DTD block..\n");
+        // printf("This is not a valid DTD block..\n");
         break;
     }
 
