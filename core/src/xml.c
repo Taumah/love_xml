@@ -248,6 +248,7 @@ int checkRegex(char* strRegex , char* haystack){
 
 int generateRegexForElement(char* elementName , char* buffer , char*  endBuffer){
 	
+	(void)endBuffer;
 	int elementIndex = -1;
 
 	for (int i = 0; i < dtd.cursorElements; i+=1)

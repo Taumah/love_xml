@@ -1,5 +1,5 @@
 <!DOCTYPE note [
-<!ELEMENT note ANY>
+<!ELEMENT note (#PCDATA)>
 <!-- <!ELEMENT note (to,from,heading,body)> -->
 <!ELEMENT to (#PCDATA)>
 <!ELEMENT from (#PCDATA)>
