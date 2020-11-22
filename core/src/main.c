@@ -18,21 +18,25 @@ int main(int argc, char* argv[]){
 
     readDTD(fileDTD);
     
-
     // printDtd();
     
-    
-
     char* xmlBuffer = NULL;
     int readXmlErrors = readXML(fileXML , &xmlBuffer);
 
     if(readXmlErrors != EXIT_FAILURE){
-        checkXML(xmlBuffer);
+        if(checkXML(xmlBuffer)){
+            printf("\nxml valide");
+        }else
+        {
+            printf("\nxml invalidé");
+        }
+        
     }
     
     free(xmlBuffer);
     freeDtd();
 
+    // menu();
     return 0;
 
 }

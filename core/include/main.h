@@ -11,7 +11,7 @@
 
 
 #include "dtd.h"
-#include "xml_2.h"
+#include "xml.h"
 #include "menu.h"
 
 #define false 0
