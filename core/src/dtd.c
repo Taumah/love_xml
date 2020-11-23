@@ -154,6 +154,16 @@ void addElement(char *line){
     dtd.elements[dtd.cursorElements].content = getEndOfBlock(line , 8);// 8 for e l e m e n t and trailing space
     // printf("|%s|%s|\n" ,dtd.elements[dtd.cursorElements].name, dtd.elements[dtd.cursorElements].content);
 
+    //extract both left and right parentheses
+    if(dtd.elements[dtd.cursorElements].content[0] == '('){
+        char* newContent = malloc(  (strlen(dtd.elements[dtd.cursorElements].content)-2) * sizeof(char) );
+
+        strncpy( newContent ,dtd.elements[dtd.cursorElements].content +1 , (strlen(dtd.elements[dtd.cursorElements].content)-2)); // ( strlen( "()" == 2 ) , et c'est ce qu'on veut retirer )
+        printf("value : %s\n" , newContent);
+        free(dtd.elements[dtd.cursorElements].content);
+        dtd.elements[dtd.cursorElements].content = newContent;
+    }
+
     dtd.cursorElements += 1;
 
     if (dtd.cursorElements == dtd.sizeElements)
