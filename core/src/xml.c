@@ -58,16 +58,18 @@ int isExtensionValid(char* fileName , char* extension){
 int checkXML(char* buffer){
 	
 	if( getFirstBlock(buffer)){ //apelle de fonction permettant d'augmenter la valeur de gap 
-		return true;
+		return false;
 	}
+	printf("\nXML description OK\n");
 	
 	if(!isRootElementValid(buffer)){ // appelle de la fonction qui vérifie la 1 er balise des fochiers XML et DTD 	
-		return true;
+		return false;
 	}
+	printf("\nroot element OK");
 
 
 
-	return false;
+	return true;
 }
 
 int isRootElementValid(char* buffer){
@@ -129,22 +131,22 @@ int getTag(char* marker , char* buffer , char* highest , int isClosing  ){
 
 	if(found == NULL || found > highest){
 		// printf("\n [%s] not found" , copy);
-		return true;
+		return false;
 	}
 
 	char* endingMarker = strchr(found , '>');
 	if( endingMarker == NULL || endingMarker >= highest  ){
 		// printf("\n [%s] not found" , copy);
-		return true;
+		return false;
 	}
 	// printf("\n [%s] found" , copy);
 	free(copy);
 
 	if(isClosing == OPENING_ELEMENT && checkAttributes(marker , found , endingMarker) != true){
 		
-		return true;
+		return false;
 	}
-	return false;
+	return true;
 }
 
 int checkAttributes(char *marker , char *startBloc , char* endBloc){
@@ -213,7 +215,7 @@ int checkAttributes(char *marker , char *startBloc , char* endBloc){
 	int returned = checkRegex(strRegex , theElementWeWantToAnalyse);
 	
 
-	printf("regex |%s| \nstring|%s|" , strRegex , theElementWeWantToAnalyse);
+	// printf("regex |%s| \nstring|%s|" , strRegex , theElementWeWantToAnalyse);
 
 	free(theElementWeWantToAnalyse);
 	free(attributeQuantifier);
@@ -266,7 +268,7 @@ int generateRegexForElement(char* elementName , char* buffer , char*  endBuffer)
 		return false;
 	}
 
-	printf("\n[%s]\n" , dtd.elements[elementIndex].content);
+	// printf("\n[%s]\n" , dtd.elements[elementIndex].content);
 
 	int isValid = 0;
 	if(strcmp(dtd.elements[elementIndex].content , "EMPTY") == 0){
@@ -279,15 +281,14 @@ int generateRegexForElement(char* elementName , char* buffer , char*  endBuffer)
 	}
 	else if( strcmp(dtd.elements[elementIndex].content , "ANY") == 0){
 		regexANY(dtd.elements[elementIndex].name , buffer);
-		printf("\n!!!!!!!!ANY ");
+		// printf("\n!!!!!!!!ANY ");
 	}else{
-		//function qui check les children
-		printf("\n!!!!!!!!CHILDREN ");
+		regexChildren(dtd.elements[elementIndex].name , buffer);
 	}
 
-	if(isValid){
-		printf("element correct");
-	}
+	// if(isValid){
+	// 	printf("element correct");
+	// }
 	return isValid;
 }
 
@@ -313,10 +314,52 @@ int regexPCDATA(char* elementName , char* buffer){
 int regexANY(char* elementName , char* buffer){
 	char strRegex[1000];
 
-	sprintf(strRegex , "(<%s [[:print:] ]*>[[:alpha:]]*</%s *>|<%s[[:print:]]*/>)" , elementName , elementName, elementName);
+	sprintf(strRegex , "(<%s[[:print:]]*/>|<%s[[:print:]]*>[[:ascii:]]*</%s *>)" , elementName , elementName, elementName);
 
 	printf("my regex : [%s]" , strRegex);
 	return checkRegex(strRegex , buffer);
 }
 
+int regexChildren(char* elementName , char* buffer){
+	char strRegex[1000];
+	int i;
+
+	//TODO replace elementName with element element , optimisation first (for elementRoot, just use this for loop once, to get the right element ehehe);)
+	for ( i = 0; i < dtd.cursorElements; i+=1)
+	{
+		if( strcmp(dtd.elements[i].name , elementName) != 0){
+			continue;
+		}
+
+		printf("\n[%s]" , dtd.elements[i].content);
+		break;
+	}
+	if( i == dtd.cursorElements){
+		printf("hay un problemo");
+		return 0;
+	}
+	//TODO split(',' , .content)   into char** , handle quantifiers ;) 
+	char** contentSplit = NULL;
+	int splitSize;
+	contentSplit = splitStr(dtd.elements[i].content , ',' , &splitSize );
+
+	printf("\nil y a %d tokens\n" , splitSize);
+	if(splitSize == 1){
+		printf("\n[%s]", dtd.elements[i].content);
+	}
+	else{
+		for (int j = 0; j < splitSize; j+=1)
+		{
+			printf("\nchaine %d[%s]" , j , contentSplit[j]);
+			// free(contentSplit[j]);
+		}
+		free(contentSplit);
+	}
+	
+	(void)strRegex;(void)buffer;
+	return 1;
+}
+
+//sprintf permet d'envoyer la sortie formatée à une chaîne pointée, par str.
+// utilisation des regex par ce que c'est bien plus simple que de chercher dans tout le code une balise < et >. 
 

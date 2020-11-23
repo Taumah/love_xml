@@ -1,6 +1,6 @@
 <!DOCTYPE note [
-<!ELEMENT note (#PCDATA)>
-<!-- <!ELEMENT note (to,from,heading,body)> -->
+<!-- <!ELEMENT note ANY> -->
+<!ELEMENT note (to,from,heading,body)>
 <!ELEMENT to (#PCDATA)>
 <!ELEMENT from (#PCDATA)>
 <!ELEMENT heading (#PCDATA)>

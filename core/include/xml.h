@@ -76,5 +76,9 @@ int regexEmpty(char* elementName , char* buffer);
 /*  créé une regex adapté à un element PCDATA*/
 int regexPCDATA(char* elementName , char* buffer);
 
-/*  créé une regex adapté à un element AN*/
+/*  créé une regex adapté à un element ANY*/
 int regexANY(char* elementName , char* buffer);
+
+/*  créé une regex adapté à un element 
+    comportant des elements enfant */
+int regexChildren(char* elementName , char* buffer);
