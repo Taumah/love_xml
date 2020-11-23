@@ -3,7 +3,7 @@
 
 void checkMalloc(void* pointer){
     if(pointer == NULL){
-        printf("manque d'espace");
+        printf("manque d'espace , sortie du programme...");
         exit(1);
     }
 
@@ -12,7 +12,6 @@ void checkMalloc(void* pointer){
 void checkfOpen(void* pointer){
     if(pointer == NULL){
         printf("fichier Non ouvert");
-        exit(1);
     }
     
 }
@@ -22,6 +21,7 @@ char** splitStr(char* str , char delim , int *splitSize){
     char** array = NULL;
 
     int counter = 1 ;
+
     int i = 0;
     char* token=NULL;
     while( *(str+i) != '\0')
@@ -32,6 +32,7 @@ char** splitStr(char* str , char delim , int *splitSize){
         i +=1;
     }
     if(counter == 1){
+        *(splitSize) = 0;
         return 0;
     }
     array = malloc(sizeof(char*) * counter);
@@ -46,6 +47,7 @@ char** splitStr(char* str , char delim , int *splitSize){
         token = strtok(NULL, &delim);
         i +=1;
     }
+
     *(splitSize) = counter;
     return array ;
     

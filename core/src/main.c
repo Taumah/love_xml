@@ -3,6 +3,12 @@
 //<to>[[:ascii:]]*<\/to>[\n\ \r]*<from>[[:ascii:]]*<\/from>
 // regex example to check following elements
 
+//it  hurts to read but : 
+//
+//<note[[:print:]]*>[^<>]*<to[^<>]*>[^<>]*<\/to[^<>]*>[^<>]*<from[^<>]*>[^<>]*<\/from[^<>]*>[^<>]*<heading[^<>]*>[^<>]*<\/heading[^<>]*>[^<>]*<body[^<>]*>[^<>]*<\/body[^<>]*>[^<>]*<\/note[^<>]*>
+//
+
+
 doctypeDef dtd; 
 
 extern size_t gap;
@@ -13,44 +19,41 @@ int main(int argc, char* argv[]){
     initDtd();
 
     char* fileDTD = "test/dtds/test.dtd";
-    // char* fileXML = "test/XML/test.xml";
+    char* fileXML = "test/XML/test.xml";
 
 
 
     readDTD(fileDTD);
     
-    // // printDtd();
+    // printDtd();
     
-    // char* xmlBuffer = NULL;
-    // int readXmlErrors = readXML(fileXML , &xmlBuffer);
+    char* xmlBuffer = NULL;
+    int readXmlErrors = readXML(fileXML , &xmlBuffer);
 
-    // if(readXmlErrors != EXIT_FAILURE){
-    //     if(checkXML(xmlBuffer)){
-    //         printf("\nxml valide");
-    //     }else
-    //     {
-    //         printf("\nxml invalidé");
-    //     }
+    if(readXmlErrors == true){
+        if(checkXML(xmlBuffer)){
+            printf("\nxml valide");
+        }else
+        {
+        	printf("\nxml invalidé");
+        }
         
-    // }
+    }
     
-    // free(xmlBuffer);
+//     int test = regexChildren("note" , "<?xml version=\"1.0\" encoding=\"UTF-8 but also something else\" ?>\
+// <note NAME=\"test\" CHAN=\"test2\" />\
+//   <to>Tove</to>\
+//   <from>Jani</from>\
+//   <heading>Reminder</heading>\
+//   <body>Don\'t forget me this weekend!</body>\
+// </note>" );
 
-    // // menu();
-
-    int test = regexChildren("note" , "<?xml version=\"1.0\" encoding=\"UTF-8 but also something else\" ?>\
-<note NAME=\"test\" CHAN=\"test2\" >\
-  <to>Tove</to>\
-  <from>Jani</from>\
-  <heading>Reminder</heading>\
-  <body>Don\'t forget me this weekend!</body>\
-</note>" );
-
-    printf("\n%d" , test);
+//     printf("\n%d" , test);
 
     freeDtd();
+	free(xmlBuffer);
 
-    return 0;
+	return 0;
 
 }
 

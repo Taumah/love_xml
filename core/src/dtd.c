@@ -8,11 +8,11 @@ int getFileSize(char* fileName , size_t *fileSize){
 
     if( stat(fileName, &stats) != 0 ){
         printf("Erreur lecture info fichiers\n");
-        return EXIT_FAILURE;
+        return false;
     } 
 
     *fileSize = stats.st_size;
-    return EXIT_SUCCESS;
+    return true;
 }
 
 
@@ -35,7 +35,7 @@ void readDTD(char* fileName){
 
     size_t fileSize;
 
-    if(getFileSize(fileName , &fileSize) == EXIT_FAILURE){
+    if(getFileSize(fileName , &fileSize) == false){
         return;
     }
     
@@ -45,7 +45,11 @@ void readDTD(char* fileName){
 
 
     FILE* f = fopen(fileName , "r");
-    checkfOpen(f);
+    if(f == NULL){
+        printf("this is not a valid file path.\n");
+        free(buffer);
+        return;
+    }
     fread(buffer , fileSize , sizeof(char) , f);
     fclose(f);
 
@@ -159,7 +163,6 @@ void addElement(char *line){
         char* newContent = malloc(  (strlen(dtd.elements[dtd.cursorElements].content)-2) * sizeof(char) );
 
         strncpy( newContent ,dtd.elements[dtd.cursorElements].content +1 , (strlen(dtd.elements[dtd.cursorElements].content)-2)); // ( strlen( "()" == 2 ) , et c'est ce qu'on veut retirer )
-        printf("value : %s\n" , newContent);
         free(dtd.elements[dtd.cursorElements].content);
         dtd.elements[dtd.cursorElements].content = newContent;
     }
@@ -370,4 +373,19 @@ char *getTheNWord(char* block , int N){
 
     return word;
 
+}
+
+
+
+int getElementIndexFromName(char* elementName){
+
+    for (int i = 0; i < dtd.cursorElements; i+=1)
+	{
+		if (strcmp(dtd.elements[i].name , elementName) == 0){
+			return i;
+		}
+		
+	}
+
+    return -1; // means no elements in DTD has this name (damn)
 }

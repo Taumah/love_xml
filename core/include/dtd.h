@@ -100,5 +100,9 @@ char* getDefaultVal(char*);
 /*  */
 char *getTheNWord(char* block , int N);
 
+/*  renvoie l'index du tableau d'element de la dtd
+    pour lequel l'element corespond à elementName*/
+int getElementIndexFromName(char* elementName);
+
 
 #endif
