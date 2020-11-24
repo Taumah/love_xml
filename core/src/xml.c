@@ -60,7 +60,7 @@ int checkXML(char* buffer){
 	if( !getFirstBlock(buffer+gap)){ //apelle de fonction permettant d'augmenter la valeur de gap 
 		return false;
 	}
-	printf("\nXML description OK\n");
+	printf("\nXML description OK AND gap is %d\n" , gap);
 	
 	if(!isRootElementValid(buffer+gap)){ // appelle de la fonction qui vérifie la 1 er balise des fochiers XML et DTD 	
 		return false;
@@ -127,7 +127,7 @@ int getTag(char* marker , char* buffer , char* highest , int isClosing  ){
 	*(copy)		= '<';
 	strcpy( copy + 1 + isClosing , marker); 
 	
-	char* found = strstr(buffer+gap , copy);
+	char* found = strstr(buffer , copy);
 
 	if(found == NULL || found > highest){
 		// printf("\n [%s] not found" , copy);
@@ -336,7 +336,7 @@ int regexChildren(char* elementName , char* buffer){
 		printf("\n[%s]", dtd.elements[i].content);
 		subRegex = regexOneToken(dtd.elements[i].content);
 
-		elementName[strlen(elementName)-1] = '\0';
+		dtd.elements[i].content[strlen(dtd.elements[i].content)-1] = '\0';
 
 		sprintf(strRegex 	,"<%s ?[[:print:]]*>[[:blank:]\\n]*%s</%s *>" ,
 							elementName , subRegex , elementName);

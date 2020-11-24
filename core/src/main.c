@@ -8,6 +8,9 @@
 //<note[[:print:]]*>[^<>]*<to[^<>]*>[^<>]*<\/to[^<>]*>[^<>]*<from[^<>]*>[^<>]*<\/from[^<>]*>[^<>]*<heading[^<>]*>[^<>]*<\/heading[^<>]*>[^<>]*<body[^<>]*>[^<>]*<\/body[^<>]*>[^<>]*<\/note[^<>]*>
 //
 
+char nameXml[20][40], nameDtd[20][40];
+char filePathXml[20][200], filePathDtd[20][200];
+char clear[20];
 
 doctypeDef dtd; 
 
@@ -18,32 +21,11 @@ int main(int argc, char* argv[]){
     (void)argc ; (void)argv;
     // initDtd();
 
-    // char* fileDTD = "test/dtds/test.dtd";
-    // char* fileXML = "test/XML/test.xml";
+    strcpy(filePathDtd[0], "test/dtds/test.dtd");
+    strcpy(filePathXml[0] , "test/XML/test.xml");
 
+    verify(1);
 
-
-    // readDTD(fileDTD);
-    
-    // // printDtd();
-    
-    // char* xmlBuffer = NULL;
-    // int readXmlErrors = readXML(fileXML , &xmlBuffer);
-
-    // if(readXmlErrors == true){
-    //     if(checkXML(xmlBuffer)){
-    //         printf("\nxml valide");
-    //     }else
-    //     {
-    //     	printf("\nxml invalidé");
-    //     }
-        
-    // }
-    
-    // freeDtd();
-	// free(xmlBuffer);
-
-    menu();
 	return 0;
 
 }

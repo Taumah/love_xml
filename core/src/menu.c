@@ -1,8 +1,8 @@
 #include "../include/menu.h"
 
-char nameXml[20][40], nameDtd[20][40];
-char filePathXml[20][200], filePathDtd[20][200];
-char clear[20];
+extern char nameXml[20][40], nameDtd[20][40];
+extern char filePathXml[20][200], filePathDtd[20][200];
+extern char clear[20];
 
 int increment;
 
