@@ -57,12 +57,12 @@ int isExtensionValid(char* fileName , char* extension){
 
 int checkXML(char* buffer){
 	
-	if( !getFirstBlock(buffer)){ //apelle de fonction permettant d'augmenter la valeur de gap 
+	if( !getFirstBlock(buffer+gap)){ //apelle de fonction permettant d'augmenter la valeur de gap 
 		return false;
 	}
 	printf("\nXML description OK\n");
 	
-	if(!isRootElementValid(buffer)){ // appelle de la fonction qui vérifie la 1 er balise des fochiers XML et DTD 	
+	if(!isRootElementValid(buffer+gap)){ // appelle de la fonction qui vérifie la 1 er balise des fochiers XML et DTD 	
 		return false;
 	}
 	printf("\nroot element OK");
@@ -312,20 +312,11 @@ int regexANY(char* elementName , char* buffer){
 }
 
 int regexChildren(char* elementName , char* buffer){
-	char strRegex[1000];
 	int i;
 
 	//TODO replace elementName with element element , optimisation first (for elementRoot, just use this for loop once, to get the right element ehehe);)
-	for ( i = 0; i < dtd.cursorElements; i+=1)
-	{
-		if( strcmp(dtd.elements[i].name , elementName) != 0){
-			continue;
-		}
-
-		printf("\n[%s]" , dtd.elements[i].content);
-		break;
-	}
-	if( i == dtd.cursorElements){
+	i = getElementIndexFromName(elementName);
+	if( i == -1){
 		printf("hay un problemo");
 		return 0;
 	}
@@ -335,38 +326,44 @@ int regexChildren(char* elementName , char* buffer){
 	int splitSize;
 	contentSplit = splitStr(dtd.elements[i].content , ',' , &splitSize );
 
-	char strQuantifier[4];
-	char* quantifier;
+
+	char strRegex[1000];
+	char* subRegex;
 
 	printf("\nil y a %d token(s)\n" , splitSize);
 	if(splitSize == 0){ // 1 seul élement dans .content
 
 		printf("\n[%s]", dtd.elements[i].content);
+		subRegex = regexOneToken(dtd.elements[i].content);
 
-		if( (quantifier = strpbrk(  dtd.elements[i].content ,  "?+*") ) != NULL){
-			strcpy(strQuantifier , quantifier);
-			dtd.elements[i].content[strlen(dtd.elements[i].content)-1] = '\0';
-		}else
-		{
-			strcpy(strQuantifier , "{1}");
-		}
+		elementName[strlen(elementName)-1] = '\0';
+
+		sprintf(strRegex 	,"<%s ?[[:print:]]*>[[:blank:]\\n]*%s</%s *>" ,
+							elementName , subRegex , elementName);
 		
-
-		sprintf(strRegex 	, "<%s ?[[:print:]]*>[[:blank:]\\n]*(<%s ?[[:print:]]*>[[:print:]]*</%s *>[[:blank:]\\n]*)%s</%s *>" 
-							,   elementName , dtd.elements[i].content , dtd.elements[i].content , strQuantifier , elementName );
+		free(subRegex);
+		
 	}
 	else{
+		sprintf(strRegex, "<%s ?[[:print:]]*>[[:blank:]\\n]*",
+							elementName);
+		char* strRegexCpy = strRegex;
 		for (int j = 0; j < splitSize; j+=1)
 		{
-			printf("\nchaine %d[%s]" , j , contentSplit[j]);
-			if( (quantifier = strpbrk(contentSplit[j],  "?+*") ) != NULL){
-				printf(" has a quantifier , it's %c" , *quantifier);
-			}
+			// printf("\nchaine %d[%s]" , j , contentSplit[j]);
+			// if( (quantifier = strpbrk(contentSplit[j],  "?+*") ) != NULL){
+			// 	printf(" has a quantifier , it's %c" , *quantifier);
+			// }
+			subRegex = regexOneToken(contentSplit[j]);
+			strcat(strRegex , subRegex );
 
+			free(subRegex);
 		}
+		sprintf(strRegex, "%s</%s *>",
+						   strRegexCpy , elementName);
 	}
 	
-	(void)strRegex;(void)buffer;
+	(void)buffer;
 
 
 	for (int j = 0; j < splitSize; j+=1) // no segfault can happen, because if no token, splitSize =0, therefore not for loop ;)
@@ -375,10 +372,32 @@ int regexChildren(char* elementName , char* buffer){
 	}
 	free(contentSplit);
 	
-	printf("regex used:|%s|" , strRegex);
+	printf(" regex used:|%s|" , strRegex);
 	return checkRegex(strRegex , buffer);
 }
 
 //sprintf permet d'envoyer la sortie formatée à une chaîne pointée, par str.
 // utilisation des regex par ce que c'est bien plus simple que de chercher dans tout le code une balise < et >. 
 
+char* regexOneToken(char* token){
+
+	char* subRegex = malloc(sizeof(char) * 150);
+	char* quantifier;
+
+	char strQuantifier[4];
+	if( (quantifier = strpbrk(  token ,  "?+*") ) != NULL){
+		strncpy(strQuantifier , quantifier , 1);
+		strQuantifier[1]= '\0';
+		
+		token[strlen(token)-1] = '\0'; // remove quantifier from token
+	}else
+	{
+		strcpy(strQuantifier , "{1}");
+	}
+
+	sprintf(subRegex 	, "(<%s ?[[:print:]]*>[[:print:]]*</%s *>[[:blank:]\\n]*)%s"
+						, token , token , strQuantifier );
+	// "<%s ?[[:print:]]*>[[:blank:]\\n]*(<%s ?[[:print:]]*>[[:print:]]*</%s *>[[:blank:]\\n]*)%s</%s *>"
+	return subRegex;
+}
+		

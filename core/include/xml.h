@@ -82,3 +82,6 @@ int regexANY(char* elementName , char* buffer);
 /*  créé une regex adapté à un element 
     comportant des elements enfant */
 int regexChildren(char* elementName , char* buffer);
+
+/*  créé une portion de regex à partir d'un element.content*/
+char* regexOneToken(char* token);

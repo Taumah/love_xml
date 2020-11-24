@@ -1,6 +1,6 @@
 #include "../include/menu.h"
 
-char nameXml[20][20], nameDtd[20][20];
+char nameXml[20][40], nameDtd[20][40];
 char filePathXml[20][200], filePathDtd[20][200];
 char clear[20];
 
@@ -25,8 +25,8 @@ int existingFile(char *filePath){
 }
 
 void menu(){
-  int choice;
-  do{
+  	int choice;
+  	do{
     printf(	"--------Menu-------- \n"	\
     		"1: Effectuer un enregistrement \n"				\
     		"2: Voir les enregistrements \n"				\
@@ -35,40 +35,34 @@ void menu(){
 			);
 
 	int emptyStream = 0;
-		
-    if( scanf("%d",&choice) == EOF){
-	    while((emptyStream = getchar()) != '\n' && emptyStream != EOF);
-	}
+	errno = 0;
+	scanf("%d",&choice);
+    while((emptyStream = getchar()) != '\n' && emptyStream != EOF);
+
     
 
     switch(choice){
-      case 1:
-        insertFile(); // apelle de la methode une permettant de prendre un fichier dtd et un xml 
-        break;
-      case 2: 
-        afficheEnregistrement(); 
-        break;
-      case 3: 
-        printf("Au revoir \n");
-        break;
-      default: 
-        printf("Demande non reconnue, entrez une nouvelle valeur\n"); 
-        break;
+      	case 1:
+        	insertFile(); // apelle de la methode une permettant de prendre un fichier dtd et un xml 
+        	break;
+      	case 2: 
+        	afficheEnregistrement(); 
+        	break;
+      	case 3: 
+        	printf("Au revoir \n");
+        	break;
+      	default: 
+        	printf("Demande non reconnue, entrez une nouvelle valeur\n"); 
+        	break;
     }
     
     
-  }while (choice !=3);
+  	}while (choice !=3);
 }
 
 
 
 void insertFile(){
-
-	int streamCleaner;
-
-	while((streamCleaner = getchar()) != '\n' && streamCleaner != EOF);
-
-
 	/*
 	Partie XML
 	*/
@@ -84,7 +78,7 @@ void insertFile(){
 	//Partie NomXML
 	printf("Donne moi un nom pour ton fichier XML: ");
 	fgets(nameXml[increment],sizeof(nameXml[increment]),stdin);
-	
+	nameXml[increment][strlen(nameXml[increment]) -1 ] = '\0'; // Permets de prendre le dernier caractère et le remplacer par un \0  
 	/* 
 	Partie DTD 
 	*/
@@ -101,6 +95,7 @@ void insertFile(){
 	//Partie NomDTD
 	printf("Donnes moi un nom pour la DTD: ");
 	fgets(nameDtd[increment],sizeof(nameDtd[increment]),stdin);
+	nameDtd[increment][strlen(nameDtd[increment]) -1 ] = '\0'; // Permets de prendre le dernier caractère et le remplacer par un \0  
 	
 	increment++; // on l'increment car on as un nouvelle enregistrement
 
@@ -109,9 +104,9 @@ void insertFile(){
 	// Affichage des fichiers et noms
 	//printf("%s%s",filePathXml,nameXml);
 	//printf("%s%s",filePathDtd,nameDtd);
-	putc('\n',stdin);
-	putc('\0',stdin);
-	printf("\n");
+	// putc('\n',stdin);
+	// putc('\0',stdin);
+	printf("\n\n");
 }
 
 void afficheEnregistrement(){
@@ -124,8 +119,8 @@ void afficheEnregistrement(){
   for(int i=0;i<increment;i++){ // Parcours les enregistrements si aucun enregistrement alors on vérifie le if 
     if(strlen(nameXml[i])>0 && strlen(nameDtd[i])>0){ // si la taille du tableau>0 alors il existe un enregistrement
       valide=0; //valide = 0 car on est rentré dans le if et pas besoin d'afficher aucun enregistrement
-      nameXml[i][strlen(nameXml[i]) -1] = '\0'; // Permets de prendre le dernier caractère et le remplacer par un \0  
-      printf("%d) %s-%s",i+1,nameXml[i],nameDtd[i]); // Affichage des enregistrements sur la même ligne grace au remplacement du \0
+      
+      printf("%d) %s-%s\n",i+1,nameXml[i],nameDtd[i]); // Affichage des enregistrements sur la même ligne grace au remplacement du \0
     }
   }
   
@@ -134,7 +129,6 @@ void afficheEnregistrement(){
     return;
   }
 
-  fgets(numberToExecute , sizeof(numberToExecute),stdin );
   
   do{
     valide= 0;
@@ -143,7 +137,7 @@ void afficheEnregistrement(){
 
 
     if( *numberToExecute == 'R' || *numberToExecute == 'r'){
-		  putc(' ',stdin);
+		  // putc(' ',stdin);
       return;
     }
 
@@ -174,8 +168,8 @@ int verify(int intToExecute  ){
 	char* xmlBuffer = NULL;
 	int readXmlErrors = readXML(filePathXml[intToExecute-1] , &xmlBuffer);
 
-	if(readXmlErrors != EXIT_FAILURE){
-		if(checkXML(xmlBuffer)){
+	if(readXmlErrors == true){
+		if(checkXML(xmlBuffer) == true){
 			printf("\nxml valide");
 			returned = true;
 		}else
@@ -184,7 +178,9 @@ int verify(int intToExecute  ){
 			returned = false;
 		}
 		
-	}
+	}else{
+    printf("Erreur lors de la lecture des fichiers");
+  }
 
 	free(xmlBuffer);
 	freeDtd();

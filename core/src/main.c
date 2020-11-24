@@ -16,43 +16,34 @@ extern size_t gap;
 int main(int argc, char* argv[]){
     
     (void)argc ; (void)argv;
-    initDtd();
+    // initDtd();
 
-    char* fileDTD = "test/dtds/test.dtd";
-    char* fileXML = "test/XML/test.xml";
+    // char* fileDTD = "test/dtds/test.dtd";
+    // char* fileXML = "test/XML/test.xml";
 
 
 
-    readDTD(fileDTD);
+    // readDTD(fileDTD);
     
-    // printDtd();
+    // // printDtd();
     
-    char* xmlBuffer = NULL;
-    int readXmlErrors = readXML(fileXML , &xmlBuffer);
+    // char* xmlBuffer = NULL;
+    // int readXmlErrors = readXML(fileXML , &xmlBuffer);
 
-    if(readXmlErrors == true){
-        if(checkXML(xmlBuffer)){
-            printf("\nxml valide");
-        }else
-        {
-        	printf("\nxml invalidé");
-        }
+    // if(readXmlErrors == true){
+    //     if(checkXML(xmlBuffer)){
+    //         printf("\nxml valide");
+    //     }else
+    //     {
+    //     	printf("\nxml invalidé");
+    //     }
         
-    }
+    // }
     
-//     int test = regexChildren("note" , "<?xml version=\"1.0\" encoding=\"UTF-8 but also something else\" ?>\
-// <note NAME=\"test\" CHAN=\"test2\" />\
-//   <to>Tove</to>\
-//   <from>Jani</from>\
-//   <heading>Reminder</heading>\
-//   <body>Don\'t forget me this weekend!</body>\
-// </note>" );
+    // freeDtd();
+	// free(xmlBuffer);
 
-//     printf("\n%d" , test);
-
-    freeDtd();
-	free(xmlBuffer);
-
+    menu();
 	return 0;
 
 }
