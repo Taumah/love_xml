@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8 but also something else" ?>
 <notes>
   <note NAME="test" CHAN="test2" >
-    <to>Tove</to>
+    <to>Tove4</to>
   </note>
   <note NAME="test" CHAN="test2" >
     <to>Tove</to>

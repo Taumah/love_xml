@@ -111,8 +111,8 @@ int getFirstBlock(char *buffer){
 		return true;
 
 	}
-	g_match_info_free (match_info); // Si match_info n'est pas NULL, appelle g_match_info_unref ()	
-	g_regex_unref (regex);
+	g_match_info_free (match_info); // libère la mémoire de la structure	
+	g_regex_unref (regex); // il est maintenant possible de reutiliser g_regex_match
 
 	return false;
 }
@@ -335,14 +335,27 @@ int regexChildren(char* elementName , char* buffer){
 	int splitSize;
 	contentSplit = splitStr(dtd.elements[i].content , ',' , &splitSize );
 
+	char strQuantifier[4];
+	char* quantifier;
+
 	printf("\nil y a %d token(s)\n" , splitSize);
-	if(splitSize == 0){
+	if(splitSize == 0){ // 1 seul élement dans .content
+
 		printf("\n[%s]", dtd.elements[i].content);
-		sprintf(strRegex 	, "<%s ?[[:print:]]*>[[:blank:]\\n]*<%s ?[[:print:]]*>[[:print:]]*</%s *>[[:blank:]\\n]*</%s *>" 
-							,   elementName , dtd.elements[i].content , dtd.elements[i].content , elementName );
+
+		if( (quantifier = strpbrk(  dtd.elements[i].content ,  "?+*") ) != NULL){
+			strcpy(strQuantifier , quantifier);
+			dtd.elements[i].content[strlen(dtd.elements[i].content)-1] = '\0';
+		}else
+		{
+			strcpy(strQuantifier , "{1}");
+		}
+		
+
+		sprintf(strRegex 	, "<%s ?[[:print:]]*>[[:blank:]\\n]*(<%s ?[[:print:]]*>[[:print:]]*</%s *>[[:blank:]\\n]*)%s</%s *>" 
+							,   elementName , dtd.elements[i].content , dtd.elements[i].content , strQuantifier , elementName );
 	}
 	else{
-		char* quantifier;
 		for (int j = 0; j < splitSize; j+=1)
 		{
 			printf("\nchaine %d[%s]" , j , contentSplit[j]);
