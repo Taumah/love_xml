@@ -33,7 +33,7 @@ char** splitStr(char* str , char delim , int *splitSize){
     }
     if(counter == 1){
         *(splitSize) = 0;
-        return 0;
+        return NULL;
     }
     array = malloc(sizeof(char*) * counter);
     checkMalloc(array);

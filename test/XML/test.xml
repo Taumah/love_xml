@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8 but also something else" ?>
 <note NAME="test" CHAN="test2" >
-  <prenom> </prenom>
-  <body>
-  
-  </body>
-  <body>z</body>
-  <body>
-  a
-  </body>
-  <truc>truc</truc>
-  <date  naissance></date naissance>
+  <to ></to>
+  <else></else>
 </note>

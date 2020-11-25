@@ -52,10 +52,9 @@ int getFirstBlock(char *buffer);
 int getTag(char* marker , char* buffer , char* highest , int isClosing );
 
 
-/*  renvoie true si la balise pointée
-    par `found` valide toutes les règles
-    d'attributs*/ 
-int checkAttributes(char *marker , char *startBloc , char* endBloc);
+/*  renvoie une portion de regex basée sur
+    les attributs de la dtd*/ 
+char* checkAttributes(char *marker);
 
 
 

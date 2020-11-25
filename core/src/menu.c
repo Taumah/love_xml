@@ -110,7 +110,7 @@ void insertFile(){
 }
 
 void afficheEnregistrement(){
-  printf("Voici les enregistrement: \n");
+  printf("Voici les enregistrements: \n");
   int valide = 1;
 
   char numberToExecute[1000];

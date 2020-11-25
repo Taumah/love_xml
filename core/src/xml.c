@@ -70,15 +70,15 @@ int checkXML(char* buffer){
 
 int isRootElementValid(char* buffer){
 
-	int errors = true;
+	int valid = true;
 	
-	errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , OPENING_ELEMENT);
+	valid &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , OPENING_ELEMENT);
 	
-	errors &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , CLOSING_ELEMENT);
+	valid &= getTag(dtd.rootElement , buffer , buffer+strlen(buffer) , CLOSING_ELEMENT);
 
-	errors &= generateRegexForElement(dtd.rootElement , buffer , buffer+strlen(buffer));
+	valid &= generateRegexForElement(dtd.rootElement , buffer , buffer+strlen(buffer));
 
-	return errors;
+	return valid;
 }
 
 int getFirstBlock(char *buffer){
@@ -145,21 +145,23 @@ int getTag(char* marker , char* buffer , char* highest , int isClosing  ){
 	return true;
 }
 
-int checkAttributes(char *marker , char *startBloc , char* endBloc){
+char* checkAttributes(char *marker){
 
-	char strRegex[1000] = "";
+	char *strRegex = malloc(1000 * sizeof(char));
+	checkMalloc(strRegex);
+
 	char *strRegexCopy = strRegex;
 
 	sprintf(strRegex , "<%s +", marker );
 
-	char* theElementWeWantToAnalyse = malloc(sizeof(char) * (endBloc-startBloc)+1);
-	checkMalloc(theElementWeWantToAnalyse);
+	// char* theElementWeWantToAnalyse = malloc(sizeof(char) * (endBloc-startBloc)+1);
+	// checkMalloc(theElementWeWantToAnalyse);
 
 	char flags = 0;
 
-	strncpy(theElementWeWantToAnalyse , startBloc , endBloc-startBloc +1);
+	// strncpy(theElementWeWantToAnalyse , startBloc , endBloc-startBloc +1);
 
-	*(theElementWeWantToAnalyse+(endBloc-startBloc)+1) = '\0';
+	// *(theElementWeWantToAnalyse+(endBloc-startBloc)+1) = '\0';
 
 	char* attributeQuantifier = malloc(sizeof(char) * 4) ;
 	char* defaultAttrValue = malloc(sizeof(char) * 25);
@@ -197,6 +199,7 @@ int checkAttributes(char *marker , char *startBloc , char* endBloc){
 				break;
 			case 0: //NONE
 				//TODO check if it is an enum. if so, create new variable to match the check
+				
 				break;
 			
 			default: // WHAT?
@@ -210,7 +213,7 @@ int checkAttributes(char *marker , char *startBloc , char* endBloc){
 
 	strcat(strRegex , ">");
 	
-	int returned = checkRegex(strRegex , theElementWeWantToAnalyse);
+	// int returned = checkRegex(strRegex , theElementWeWantToAnalyse);
 	
 
 	// printf("regex |%s| \nstring|%s|" , strRegex , theElementWeWantToAnalyse);
@@ -219,7 +222,7 @@ int checkAttributes(char *marker , char *startBloc , char* endBloc){
 	free(attributeQuantifier);
 	free(defaultAttrValue);
 
-	return returned;
+	return strRegex;
 }
 
 
@@ -253,7 +256,6 @@ int checkRegex(char* strRegex , char* haystack){
 int generateRegexForElement(char* elementName , char* buffer , char*  endBuffer){
 	
 	//TODO transform it into a char* instead of char* begin and char* end
-	(void)endBuffer;
 	int elementIndex = -1;
 
 	char* newBuffer = malloc(sizeof(char) * (endBuffer - buffer)+1);
@@ -290,16 +292,25 @@ int generateRegexForElement(char* elementName , char* buffer , char*  endBuffer)
 int regexEmpty(char* elementName , char* buffer){
 
 	char strRegex[1000];
+	char *subRegex = checkAttributes(elementName);
+	strcpy(strRegex , subRegex);
+	free(subRegex);
 
-	sprintf(strRegex , "<%s [[:print:]]*/>" , elementName);
+	strRegex[strlen(strRegex)] = '\0';
+	strRegex[strlen(strRegex)-1] = '>';
+	strRegex[strlen(strRegex)-2] = '/';
+
+
+
 	return checkRegex(strRegex , buffer);
 }
 
 int regexPCDATA(char* elementName , char* buffer){
 	char strRegex[1000];
+	char* subRegex = checkAttributes(elementName);
 
-	sprintf(strRegex , "<%s [[:print:]]*>[^<>]*</%s *>" , elementName , elementName);
-
+	sprintf(strRegex , "%s[^<>]*</%s *>" , subRegex , elementName);
+	free(subRegex);
 	// printf("my regex : [%s]" , strRegex);
 	return checkRegex(strRegex , buffer);
 }
@@ -307,10 +318,14 @@ int regexPCDATA(char* elementName , char* buffer){
 int regexANY(char* elementName , char* buffer){
 	char strRegex[1000];
 
-	sprintf(strRegex , "(<%s ?[[:print:]]*/>|<%s ?[[:print:]]*>[[:ascii:]]*</%s *>)" , elementName , elementName, elementName);
+	char* subRegex = checkAttributes(elementName);
 
+	int isEmpty = regexEmpty(elementName , buffer);
+
+	sprintf(strRegex , "%s[[:ascii:]]*</%s *>)" , subRegex , elementName);
+	int isOther = checkRegex(strRegex , buffer);
 	// printf("my regex : [%s]" , strRegex);
-	return checkRegex(strRegex , buffer);
+	return isEmpty || isOther;
 }
 
 int regexChildren(char* elementName , char* buffer){
@@ -322,7 +337,6 @@ int regexChildren(char* elementName , char* buffer){
 		return 0;
 	}
 
-
 	char **contentSplit = NULL ;
 	// char **contentPipeSplit = NULL;
 	int splitSize ;
@@ -330,7 +344,7 @@ int regexChildren(char* elementName , char* buffer){
 	
 	contentSplit = splitStr(dtd.elements[i].content , ',' , &splitSize );
 
-	char strRegex[1000];
+	char strRegex[1000] = "";
 	char* subRegex;
 
 	// printf("\nil y a %d token(s)\n" , splitSize);
@@ -338,17 +352,23 @@ int regexChildren(char* elementName , char* buffer){
 		// printf("\n[%s]", dtd.elements[i].content);
 		subRegex = regexOneToken(dtd.elements[i].content);
 
-		dtd.elements[i].content[strlen(dtd.elements[i].content)-1] = '\0';
+		char *subRegexMarker = checkAttributes(dtd.elements[i].name);
 
-		sprintf(strRegex 	,"<%s ?[[:print:]]*>[[:blank:]\\n]*%s</%s *>" ,
-							elementName , subRegex , elementName);
+		// dtd.elements[i].content[strlen(dtd.elements[i].content)-1] = '\0';
+
+		sprintf(strRegex 	,"%s[[:blank:]\\n]*%s</%s *>" ,
+							subRegexMarker , subRegex , elementName);
 		
+		printf("\nregex used : %s" ,  strRegex);
 		free(subRegex);
+		free(subRegexMarker);
 		
 	}
 	else{
-		sprintf(strRegex, "<%s ?[[:print:]]*>[[:blank:]\\n]*",
-							elementName);
+		char* strRegexMarker = checkAttributes(elementName );
+		sprintf(strRegex, "%s[[:blank:]\\n]*",
+							strRegexMarker);
+		free(strRegexMarker);
 		char* strRegexCpy = strRegex;
 		for (int j = 0; j < splitSize; j+=1)
 		{
@@ -369,6 +389,8 @@ int regexChildren(char* elementName , char* buffer){
 		}
 		sprintf(strRegex, "%s</%s *>",
 						   strRegexCpy , elementName);
+		printf("\nregex used : %s" ,  strRegex);
+
 	}
 	
 	doubleFree(contentSplit , splitSize);
@@ -386,20 +408,27 @@ char* regexOneToken(char* token){
 	char* subRegex = malloc(sizeof(char) * 150);
 	char* quantifier;
 
+
+	char* copy = malloc(sizeof(char)* strlen(token)+1);
+	strcpy(copy , token);
 	char strQuantifier[4];
-	if( (quantifier = strpbrk(  token ,  "?+*") ) != NULL){
+	if( (quantifier = strpbrk(  copy ,  "?+*") ) != NULL){
 		strncpy(strQuantifier , quantifier , 1);
 		strQuantifier[1]= '\0';
 		
-		token[strlen(token)-1] = '\0'; // remove quantifier from token
+		copy[strlen(copy)-1] = '\0'; // remove quantifier from token
 	}else
 	{
 		strcpy(strQuantifier , "{1}");
 	}
 
-	sprintf(subRegex 	, "(<%s ?[[:print:]]*>[^<>]*</%s *>[[:blank:]\\n]*)%s"
-						, token , token , strQuantifier );
-	// "<%s ?[[:print:]]*>[[:blank:]\\n]*(<%s ?[[:print:]]*>[[:print:]]*</%s *>[[:blank:]\\n]*)%s</%s *>"
+	char* subRegexMarker = checkAttributes(copy);
+
+	sprintf(subRegex 	, "(%s[[:ascii:]]*</%s *>[[:blank:]\\n]*)%s"
+						, subRegexMarker , copy , strQuantifier );
+
+	free(subRegexMarker);
+	free(copy);
 	return subRegex;
 }
-		
+	
