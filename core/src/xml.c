@@ -60,15 +60,11 @@ int checkXML(char* buffer){
 	if( !getFirstBlock(buffer+gap)){ //apelle de fonction permettant d'augmenter la valeur de gap 
 		return false;
 	}
-	printf("\nXML description OK AND gap is %d\n" , gap);
+	printf("\nEntête XML correcte");
 	
 	if(!isRootElementValid(buffer+gap)){ // appelle de la fonction qui vérifie la 1 er balise des fochiers XML et DTD 	
 		return false;
 	}
-	printf("\nroot element OK");
-
-
-
 	return true;
 }
 
@@ -219,7 +215,7 @@ int checkAttributes(char *marker , char *startBloc , char* endBloc){
 
 	// printf("regex |%s| \nstring|%s|" , strRegex , theElementWeWantToAnalyse);
 
-	free(theElementWeWantToAnalyse);
+	// free(theElementWeWantToAnalyse);
 	free(attributeQuantifier);
 	free(defaultAttrValue);
 
@@ -246,6 +242,8 @@ int checkRegex(char* strRegex , char* haystack){
 	g_match_info_free (match_info);
 	g_regex_unref (regex);
 
+	free(haystack);
+
 
 	return returned;
 
@@ -258,6 +256,11 @@ int generateRegexForElement(char* elementName , char* buffer , char*  endBuffer)
 	(void)endBuffer;
 	int elementIndex = -1;
 
+	char* newBuffer = malloc(sizeof(char) * (endBuffer - buffer)+1);
+	checkMalloc(newBuffer);
+	
+	strncpy(newBuffer , buffer , endBuffer - buffer );
+
 
 	elementIndex = getElementIndexFromName(elementName);
 
@@ -268,18 +271,18 @@ int generateRegexForElement(char* elementName , char* buffer , char*  endBuffer)
 	// printf("\n[%s]\n" , dtd.elements[elementIndex].content);
 
 	if(strcmp(dtd.elements[elementIndex].content , "EMPTY") == 0){
-		return regexEmpty(dtd.elements[elementIndex].name , buffer);
+		return regexEmpty(dtd.elements[elementIndex].name , newBuffer);
 		// printf("\n!!!!!!!!EMPTY and %dand [%s]" ,isValid , buffer );
 	}
 	else if( strcmp(dtd.elements[elementIndex].content , "#PCDATA" ) == 0){
-		printf("\n!!!!!!!!PCDATA ");
-		return regexPCDATA(dtd.elements[elementIndex].name , buffer);
+		// printf("\n!!!!!!!!PCDATA ");
+		return regexPCDATA(dtd.elements[elementIndex].name , newBuffer);
 	}
 	else if( strcmp(dtd.elements[elementIndex].content , "ANY") == 0){
 		return regexANY(dtd.elements[elementIndex].name , buffer);
 		// printf("\n!!!!!!!!ANY ");
 	}else{
-		return regexChildren(dtd.elements[elementIndex].name , buffer);
+		return regexChildren(dtd.elements[elementIndex].name , newBuffer);
 	}
 }
 
@@ -289,7 +292,6 @@ int regexEmpty(char* elementName , char* buffer){
 	char strRegex[1000];
 
 	sprintf(strRegex , "<%s [[:print:]]*/>" , elementName);
-
 	return checkRegex(strRegex , buffer);
 }
 
@@ -298,7 +300,7 @@ int regexPCDATA(char* elementName , char* buffer){
 
 	sprintf(strRegex , "<%s [[:print:]]*>[^<>]*</%s *>" , elementName , elementName);
 
-	printf("my regex : [%s]" , strRegex);
+	// printf("my regex : [%s]" , strRegex);
 	return checkRegex(strRegex , buffer);
 }
 
@@ -307,14 +309,13 @@ int regexANY(char* elementName , char* buffer){
 
 	sprintf(strRegex , "(<%s ?[[:print:]]*/>|<%s ?[[:print:]]*>[[:ascii:]]*</%s *>)" , elementName , elementName, elementName);
 
-	printf("my regex : [%s]" , strRegex);
+	// printf("my regex : [%s]" , strRegex);
 	return checkRegex(strRegex , buffer);
 }
 
 int regexChildren(char* elementName , char* buffer){
 	int i;
 
-	//TODO replace elementName with element element , optimisation first (for elementRoot, just use this for loop once, to get the right element ehehe);)
 	i = getElementIndexFromName(elementName);
 	if( i == -1){
 		printf("hay un problemo");
@@ -322,18 +323,19 @@ int regexChildren(char* elementName , char* buffer){
 	}
 
 
-	char** contentSplit = NULL;
-	int splitSize;
+	char **contentSplit = NULL ;
+	// char **contentPipeSplit = NULL;
+	int splitSize ;
+	// int splitPipeSize;
+	
 	contentSplit = splitStr(dtd.elements[i].content , ',' , &splitSize );
-
 
 	char strRegex[1000];
 	char* subRegex;
 
-	printf("\nil y a %d token(s)\n" , splitSize);
+	// printf("\nil y a %d token(s)\n" , splitSize);
 	if(splitSize == 0){ // 1 seul élement dans .content
-
-		printf("\n[%s]", dtd.elements[i].content);
+		// printf("\n[%s]", dtd.elements[i].content);
 		subRegex = regexOneToken(dtd.elements[i].content);
 
 		dtd.elements[i].content[strlen(dtd.elements[i].content)-1] = '\0';
@@ -350,12 +352,18 @@ int regexChildren(char* elementName , char* buffer){
 		char* strRegexCpy = strRegex;
 		for (int j = 0; j < splitSize; j+=1)
 		{
-			// printf("\nchaine %d[%s]" , j , contentSplit[j]);
-			// if( (quantifier = strpbrk(contentSplit[j],  "?+*") ) != NULL){
-			// 	printf(" has a quantifier , it's %c" , *quantifier);
-			// }
+			
 			subRegex = regexOneToken(contentSplit[j]);
 			strcat(strRegex , subRegex );
+
+			// if(strchr(contentSplit[j] , '|')){
+				// 	contentSplit = removeParentheses(contentSplit);
+				// 	contentPipeSplit = splitStr(contentSplit[j] , '|' , &splitPipeSize); 
+				// 	for (int k = 0; k < splitPipeSize; k+=1)
+				// 	{
+				// 		printf("\nIntra content : [%s]\n" , contentPipeSplit[k]);
+				// 	}
+			// }
 
 			free(subRegex);
 		}
@@ -363,16 +371,10 @@ int regexChildren(char* elementName , char* buffer){
 						   strRegexCpy , elementName);
 	}
 	
-	(void)buffer;
+	doubleFree(contentSplit , splitSize);
+	// doubleFree(contentPipeSplit , splitPipeSize);
 
-
-	for (int j = 0; j < splitSize; j+=1) // no segfault can happen, because if no token, splitSize =0, therefore not for loop ;)
-	{
-		free(contentSplit[j]);
-	}
-	free(contentSplit);
-	
-	printf(" regex used:|%s|" , strRegex);
+	// printf(" regex used:|%s|" , strRegex);
 	return checkRegex(strRegex , buffer);
 }
 
@@ -395,7 +397,7 @@ char* regexOneToken(char* token){
 		strcpy(strQuantifier , "{1}");
 	}
 
-	sprintf(subRegex 	, "(<%s ?[[:print:]]*>[[:print:]]*</%s *>[[:blank:]\\n]*)%s"
+	sprintf(subRegex 	, "(<%s ?[[:print:]]*>[^<>]*</%s *>[[:blank:]\\n]*)%s"
 						, token , token , strQuantifier );
 	// "<%s ?[[:print:]]*>[[:blank:]\\n]*(<%s ?[[:print:]]*>[[:print:]]*</%s *>[[:blank:]\\n]*)%s</%s *>"
 	return subRegex;

@@ -53,3 +53,18 @@ char** splitStr(char* str , char delim , int *splitSize){
     
 
 }
+
+
+void doubleFree(char** array , int size){
+
+	for (int j = 0; j < size; j+=1) // no segfault can happen, because if no token, splitSize =0, therefore not for loop ;)
+	{
+		free(array[j]);
+	}
+	
+	if(size > 0){
+		free(array);
+	}
+	
+
+}

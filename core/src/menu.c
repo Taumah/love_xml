@@ -163,14 +163,14 @@ int verify(int intToExecute  ){
 
 	readDTD(filePathDtd[intToExecute-1]); // -1 because we added +1 at display
 
-	printDtd();
+	// printDtd();
 
 	char* xmlBuffer = NULL;
 	int readXmlErrors = readXML(filePathXml[intToExecute-1] , &xmlBuffer);
 
 	if(readXmlErrors == true){
 		if(checkXML(xmlBuffer) == true){
-			printf("\nxml valide");
+			printf("\nxml validé (profondeur de 1)");
 			returned = true;
 		}else
 		{

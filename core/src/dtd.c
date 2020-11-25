@@ -46,7 +46,7 @@ void readDTD(char* fileName){
 
     FILE* f = fopen(fileName , "r");
     if(f == NULL){
-        printf("this is not a valid file path.\n");
+        printf("chemin invalide.\n");
         free(buffer);
         return;
     }

@@ -20,7 +20,7 @@ build:
 	@/usr/bin/time --format="Build Duration: %E" make -s compile
 
 launch:
-	@echo "\n\n"
+	@echo "\n"
 	@$(output)
 
 all: build launch

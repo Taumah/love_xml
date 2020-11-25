@@ -16,3 +16,8 @@ void checkfOpen(void* pointer);
     de delimiter. affecte nombre de tokens générés
     à splitSize et renvoie un tableau de string*/
 char** splitStr(char* str , char delim , int *splitSize);
+
+
+/*  libère la mémoire d'un tableau de chaînes de
+    caractères*/
+void doubleFree(char** array , int size);

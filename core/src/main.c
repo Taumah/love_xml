@@ -1,12 +1,5 @@
 #include "../include/main.h"
 
-//<to>[[:ascii:]]*<\/to>[\n\ \r]*<from>[[:ascii:]]*<\/from>
-// regex example to check following elements
-
-//it  hurts to read but : 
-//
-//<note[[:print:]]*>[^<>]*<to[^<>]*>[^<>]*<\/to[^<>]*>[^<>]*<from[^<>]*>[^<>]*<\/from[^<>]*>[^<>]*<heading[^<>]*>[^<>]*<\/heading[^<>]*>[^<>]*<body[^<>]*>[^<>]*<\/body[^<>]*>[^<>]*<\/note[^<>]*>
-//
 
 char nameXml[20][40], nameDtd[20][40];
 char filePathXml[20][200], filePathDtd[20][200];
@@ -17,14 +10,8 @@ doctypeDef dtd;
 extern size_t gap;
 
 int main(int argc, char* argv[]){
-    
-    (void)argc ; (void)argv;
-    // initDtd();
-
-    strcpy(filePathDtd[0], "test/dtds/test.dtd");
-    strcpy(filePathXml[0] , "test/XML/test.xml");
-
-    verify(1);
+    (void)argc; (void)argv;
+    menu();
 
 	return 0;
 

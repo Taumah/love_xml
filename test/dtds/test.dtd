@@ -1,7 +1,7 @@
 <!DOCTYPE note [
 <!-- <!ELEMENT note (#PCDATA)> -->
-<!ELEMENT note (to,from,heading,body)>
-<!-- <!ELEMENT note (to+)> -->
+<!-- <!ELEMENT note (to+,(from|to),heading*,body?)> -->
+<!ELEMENT note (to*,from?,(nom|prenom),body+,(head|headin|truc),date  naissance)>
 <!ELEMENT to (#PCDATA)>
 <!ELEMENT from (#PCDATA)>
 <!ELEMENT heading (#PCDATA)>
